@@ -7,8 +7,8 @@ import { Memoize } from 'lodash-decorators';
   providedIn: 'root'
 })
 export class ValidationMessagesService {
-  private parser: Parser | null;
-  private validationMessagesFinalConfig: ValidationMessagesConfig<ValidationMessage> = {};
+  private parser!: Parser;
+  private validationMessagesFinalConfig: ValidationMessagesConfig<ValidationMessage | any> = {}; // types
   private templateMatcher: RegExp = /{{(.*)}}+/g;
   private _materialErrorMatcher = false;
 
@@ -17,7 +17,7 @@ export class ValidationMessagesService {
   }
 
   @Memoize()
-  getValidatorErrorMessage(validatorName: string, validatorValue: any = {}): string {
+  getValidatorErrorMessage(validatorName: string, validatorValue: any = {}): string { // types
     if (!this.validationMessagesFinalConfig[validatorName]) {
       return this.validatorNotSpecified(validatorName);
     }
@@ -43,7 +43,7 @@ export class ValidationMessagesService {
   }
 
   setValidationMessages(validationMessagesConfig: ValidationMessagesConfig): void {
-    const validationMessagesFinalConfig = {};
+    const validationMessagesFinalConfig: any = {};
     // Clear memoized cache. Find different way to access clear method
     if ((this.getValidatorErrorMessage as any).clear) {
       (this.getValidatorErrorMessage as any).clear();
@@ -72,7 +72,7 @@ export class ValidationMessagesService {
     this.validationMessagesFinalConfig = { ...validationMessagesFinalConfig };
   }
 
-  setServerMessagesParser(serverMessageParser: Parser | null): void {
+  setServerMessagesParser(serverMessageParser: Parser): void {
     this.parser = serverMessageParser;
   }
 
@@ -101,7 +101,7 @@ export class ValidationMessagesService {
   }
 
   private getValidatorValue(key: string): string {
-    return angularValidatorsWithValueMap[key] || key;
+    return (angularValidatorsWithValueMap as any)[key] || key; // types
   }
 
   private validatorNotSpecified(validatorName: string): string {

@@ -1,3 +1,3 @@
 export interface Parser {
-  parse: ((str: string, params?: any) => string) | null;
+  parse: ((str: string, params?: any) => string);
 }

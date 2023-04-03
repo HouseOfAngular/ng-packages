@@ -1,0 +1,37 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "validation-messages",
+  "projectType": "library",
+  "sourceRoot": "projects/validation-messages/src",
+  "prefix": "lib",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "options": {
+        "project": "projects/validation-messages/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "projects/validation-messages/tsconfig.lib.json"
+        },
+        "development": {
+          "tsConfig": "projects/validation-messages/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production",
+      "outputs": [
+        "{workspaceRoot}/dist/validation-messages"
+      ]
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "tsConfig": "projects/validation-messages/tsconfig.spec.json",
+        "polyfills": [
+          "zone.js",
+          "zone.js/testing"
+        ]
+      }
+    }
+  }
+}

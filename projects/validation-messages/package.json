@@ -1,12 +1,26 @@
 {
-  "name": "validation-messages",
-  "version": "0.0.1",
+  "name": "@valueadd/ng-validation-messages",
+  "author": "valueadd",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/valueadd-poland/ng-validation-messages.git"
+  },
+  "bugs": {
+    "url": "https://github.com/valueadd-poland/ng-validation-messages/issues"
+  },
+  "keywords": [
+    "angular",
+    "forms",
+    "validation"
+  ],
+  "license": "MIT",
+  "version": "14.0.1",
+  "devDependencies": {
+    "typescript": "~4.7.4"
+  },
   "peerDependencies": {
-    "@angular/common": "^15.2.0",
-    "@angular/core": "^15.2.0"
-  },
-  "dependencies": {
-    "tslib": "^2.3.0"
-  },
-  "sideEffects": false
+    "@angular/common": "~14.1.1",
+    "@angular/core": "~14.1.1",
+    "lodash-decorators": "^6.0.1"
+  }
 }

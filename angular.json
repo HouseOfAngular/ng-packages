@@ -16,7 +16,7 @@
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/validation-messages/tsconfig.lib.prod.json"
+              "tsConfig": "projects/validation-messages/tsconfig.lib.json"
             },
             "development": {
               "tsConfig": "projects/validation-messages/tsconfig.lib.json"

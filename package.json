@@ -6,7 +6,9 @@
     "start": "nx serve",
     "build": "nx build",
     "watch": "nx build --watch --configuration development",
-    "test": "nx test"
+    "test": "nx test",
+    "release:major": "standard-version --release-as=\"major\"",
+    "release:minor": "standard-version --release-as=\"minor\""
   },
   "private": true,
   "dependencies": {
@@ -22,6 +24,7 @@
     "@angular/router": "^15.2.0",
     "lodash-decorators": "^6.0.1",
     "rxjs": "~7.8.0",
+    "standard-version": "^9.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
   },

@@ -1,3 +1,28 @@
-<app-nx-welcome></app-nx-welcome> <router-outlet></router-outlet>
-
-<ng-validation-messages></ng-validation-messages>
+<form [formGroup]="form">
+  <div class="dialog__content">
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error>
+        <!--        todo types-->
+        <ng-validation-messages
+          [control]="$any(form.get('name'))"
+          [multiple]="multiple"
+          [apiErrorMessages]="apiErrors"
+        ></ng-validation-messages>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+      <mat-error>
+        <!--        todo types-->
+        <ng-validation-messages
+          [control]="$any(form.get('email'))"
+        ></ng-validation-messages>
+      </mat-error>
+    </mat-form-field>
+    <button (click)="multiple = !multiple">Change multiple</button
+    >{{ multiple }}
+  </div>
+</form>

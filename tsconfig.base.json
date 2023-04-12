@@ -1,0 +1,20 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "dom"],
+    "baseUrl": "./",
+    "paths": {
+      "linking-tool": ["projects/linking-tool/src/index.ts"],
+      "validation-messages": [
+        "projects/validation-messages/src/index.ts"
+      ]
+    }
+  }
+}

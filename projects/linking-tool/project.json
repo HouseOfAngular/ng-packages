@@ -1,23 +1,23 @@
 {
-  "name": "validation-messages",
+  "name": "linking-tool",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "projects/validation-messages/src",
+  "sourceRoot": "projects/linking-tool/src",
   "prefix": "app",
   "tags": [],
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/angular:ng-packagr-lite",
+      "executor": "@nrwl/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
-        "project": "projects/validation-messages/ng-package.json"
+        "project": "projects/linking-tool/ng-package.json"
       },
       "configurations": {
         "production": {
-          "tsConfig": "projects/validation-messages/tsconfig.lib.prod.json"
+          "tsConfig": "projects/linking-tool/tsconfig.lib.prod.json"
         },
         "development": {
-          "tsConfig": "projects/validation-messages/tsconfig.lib.json"
+          "tsConfig": "projects/linking-tool/tsconfig.lib.json"
         }
       },
       "defaultConfiguration": "production"
@@ -26,7 +26,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "projects/validation-messages/jest.config.ts",
+        "jestConfig": "projects/linking-tool/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -41,8 +41,8 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "projects/validation-messages/**/*.ts",
-          "projects/validation-messages/**/*.html"
+          "projects/linking-tool/**/*.ts",
+          "projects/linking-tool/**/*.html"
         ]
       }
     }

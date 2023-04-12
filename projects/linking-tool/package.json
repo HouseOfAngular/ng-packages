@@ -1,5 +1,5 @@
 {
-  "name": "@house-of-angular/validation-messages",
+  "name": "@house-of-angular/linking-tool",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^15.2.0",

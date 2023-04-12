@@ -1,23 +1,30 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/out-tsc",
+    "target": "es2022",
+    "useDefineForClassFields": false,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "downlevelIteration": true,
-    "useDefineForClassFields": false,
-    "paths": {
-      "validation-messages": ["dist/validation-messages"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ],
+  "extends": "../../tsconfig.base.json",
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  },
-  "extends": "./tsconfig.base.json"
+    "strictTemplates": true,
+    "compilationMode": "partial"
+  }
 }

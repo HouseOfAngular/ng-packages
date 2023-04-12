@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
-  FormGroup,
   Validators,
 } from '@angular/forms';
-import { ApiErrorMessage } from '../../../../projects/validation-messages/src/lib/resources';
+import { ApiErrorMessage } from '../../../../projects/validation-messages/src';
 
 const validationConfig = {
   nameMinLength: 4,

@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'validation-messages1-example-app',
+  displayName: 'projects-linking-tool',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../coverage/apps/validation-messages1-example-app',
+  coverageDirectory: '../../coverage/projects/linking-tool',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

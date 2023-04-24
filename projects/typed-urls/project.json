@@ -1,0 +1,50 @@
+{
+  "name": "projects-typed-urls",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "projects/typed-urls/src",
+  "prefix": "app",
+  "tags": [],
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "options": {
+        "project": "projects/typed-urls/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "projects/typed-urls/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "projects/typed-urls/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "projects/typed-urls/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "projects/typed-urls/**/*.ts",
+          "projects/typed-urls/**/*.html"
+        ]
+      }
+    }
+  }
+}

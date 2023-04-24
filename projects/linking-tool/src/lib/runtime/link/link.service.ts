@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { Params } from "@angular/router";
-import { Link, LinksMap, LinkType, RouterLink, utils } from "../resources";
+import { Injectable } from '@angular/core';
+import { Params } from '@angular/router';
+import { Link, LinksMap, LinkType, RouterLink, utils } from '../resources';
 
 @Injectable()
 export class LinkService {
-  private linksMap!: LinksMap;
-  private linkType!: typeof LinkType;
+  linksMap!: LinksMap;
+  linkType!: typeof LinkType;
 
   generateExternalUrlLink(url: string): Link {
     return {
@@ -25,9 +25,9 @@ export class LinkService {
     let url = '';
 
     if (link.type === LinkType.externalUrl) {
-      return utils.hasProtocolOrIsProtocolRelative(link?.params?.["url"])
-        ? link?.params?.["url"]
-        : "//" + link?.params?.["url"];
+      return utils.hasProtocolOrIsProtocolRelative(link?.params?.['url'])
+        ? link?.params?.['url']
+        : '//' + link?.params?.['url'];
     }
 
     if (this.linksMap[link.type || '']) {
@@ -39,31 +39,31 @@ export class LinkService {
     if (link.params) {
       url = utils.interpolate(url, link.params);
       if (link.params.anchor) {
-        url += "#" + link.params.anchor;
+        url += '#' + link.params.anchor;
       }
       if (link.params.queryParams) {
         url += this.convertParamsToQueryParamsString(link.params.queryParams);
       }
     }
 
-    return url || "#";
+    return url || '#';
   }
 
   resolveRouterLink(link: Link): RouterLink {
     return this.linksMap[link.type || '']
       ? this.getRouterLink(link)
-      : { path: ["#"] };
+      : { path: ['#'] };
   }
 
-  private convertParamsToQueryParamsString(params: Params): string {
-    let result = "";
+  convertParamsToQueryParamsString(params: Params): string {
+    let result = '';
     const paramsObject = Object.keys(params);
 
     if (paramsObject.length) {
-      result = "?";
+      result = '?';
       paramsObject.forEach((key: string, index: number) => {
         result += `${key}=${params[key]}${
-          index < paramsObject.length ? "&" : ""
+          index < paramsObject.length ? '&' : ''
         }`;
       });
     }

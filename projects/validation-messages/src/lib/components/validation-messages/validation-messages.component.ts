@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, DoCheck, Input, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  DoCheck,
+  Input,
+  OnDestroy,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -7,7 +13,7 @@ import { ValidationMessagesService } from '../../services/validation-messages.se
 
 @Component({
   selector: 'ng-validation-messages',
-  templateUrl: './validation-messages.component.html'
+  templateUrl: './validation-messages.component.html',
 })
 export class ValidationMessagesComponent implements OnDestroy, DoCheck {
   materialErrorMatcher = false;
@@ -23,11 +29,12 @@ export class ValidationMessagesComponent implements OnDestroy, DoCheck {
     private cd: ChangeDetectorRef,
     private validationMessagesService: ValidationMessagesService
   ) {
-    this.unsubscribeAndClearValueChanges = this.unsubscribeAndClearValueChanges.bind(this);
+    this.unsubscribeAndClearValueChanges =
+      this.unsubscribeAndClearValueChanges.bind(this);
     this.materialErrorMatcher = validationMessagesService.materialErrorMatcher;
   }
 
-  private _multiple: boolean = false;
+  private _multiple = false;
 
   get multiple(): boolean {
     return this._multiple;
@@ -45,13 +52,21 @@ export class ValidationMessagesComponent implements OnDestroy, DoCheck {
     | string
     | null = null;
 
-  get apiErrorMessages(): Array<ApiErrorMessage | string> | ApiErrorMessage | string | null {
+  get apiErrorMessages():
+    | Array<ApiErrorMessage | string>
+    | ApiErrorMessage
+    | string
+    | null {
     return this._apiErrorMessages;
   }
 
   @Input()
   set apiErrorMessages(
-    apiErrorMessages: Array<ApiErrorMessage | string> | ApiErrorMessage | string | null
+    apiErrorMessages:
+      | Array<ApiErrorMessage | string>
+      | ApiErrorMessage
+      | string
+      | null
   ) {
     this.unsubscribeAndClearValueChanges();
     this._apiErrorMessages = apiErrorMessages;
@@ -60,7 +75,7 @@ export class ValidationMessagesComponent implements OnDestroy, DoCheck {
 
     if (this.control && apiErrorMessages) {
       this.control.setErrors({
-        server: apiErrorMessages
+        server: apiErrorMessages,
       });
 
       this.observeInputValueChanges();
@@ -80,18 +95,29 @@ export class ValidationMessagesComponent implements OnDestroy, DoCheck {
   }
 
   parseApiErrorMessages(
-    apiErrorMessages: Array<ApiErrorMessage | string> | ApiErrorMessage | string | null
+    apiErrorMessages:
+      | Array<ApiErrorMessage | string>
+      | ApiErrorMessage
+      | string
+      | null
   ): void {
     if (!apiErrorMessages) {
       this.parsedApiErrorMessages = [];
       return;
     }
 
-    const messages = apiErrorMessages instanceof Array ? [...apiErrorMessages] : [apiErrorMessages];
-    this.parsedApiErrorMessages = messages.map((message: ApiErrorMessage | string) =>
-      message instanceof Object
-        ? this.validationMessagesService.parseApiErrorMessage(message.message, message.property)
-        : message
+    const messages =
+      apiErrorMessages instanceof Array
+        ? [...apiErrorMessages]
+        : [apiErrorMessages];
+    this.parsedApiErrorMessages = messages.map(
+      (message: ApiErrorMessage | string) =>
+        message instanceof Object
+          ? this.validationMessagesService.parseApiErrorMessage(
+              message.message,
+              message.property
+            )
+          : message
     );
   }
 
@@ -116,7 +142,7 @@ export class ValidationMessagesComponent implements OnDestroy, DoCheck {
     if (this.control && this.control.errors) {
       for (const propertyName in this.control.errors) {
         if (
-          this.control.errors.hasOwnProperty(propertyName) &&
+          this.control.errors[propertyName] &&
           propertyName !== 'server' &&
           !(!this.multiple && this.errorMessages.length === 1)
         ) {

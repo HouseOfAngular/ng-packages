@@ -1,9 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  Validators,
-} from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { ApiErrorMessage } from '../../../../projects/validation-messages/src';
 
 const validationConfig = {
@@ -17,7 +14,7 @@ const validationConfig = {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   form = this.fb.group({
     email: ['', [Validators.email, this.emailDomainValidator]],
     name: [
@@ -40,9 +37,6 @@ export class AppComponent implements OnInit {
   multiple = false;
 
   constructor(private fb: FormBuilder) {}
-
-  ngOnInit(): void {
-  }
 
   emailDomainValidator(control: FormControl) {
     const email = control.value;

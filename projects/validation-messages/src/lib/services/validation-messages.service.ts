@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
 import { angularValidatorsWithValueMap } from '../resources';
-import { Parser, ValidationMessage, ValidationMessagesConfig } from '../resources';
+import {
+  Parser,
+  ValidationMessage,
+  ValidationMessagesConfig,
+} from '../resources';
 import { Memoize } from 'lodash-decorators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ValidationMessagesService {
   private parser!: Parser;
-  private validationMessagesFinalConfig: ValidationMessagesConfig<ValidationMessage | any> = {}; // types
-  private templateMatcher: RegExp = /{{(.*)}}+/g;
+  private validationMessagesFinalConfig: ValidationMessagesConfig<
+    ValidationMessage | any
+  > = {}; // types
+  private templateMatcher = /{{(.*)}}+/g;
   private _materialErrorMatcher = false;
 
   get materialErrorMatcher(): boolean {
@@ -17,32 +23,45 @@ export class ValidationMessagesService {
   }
 
   @Memoize()
-  getValidatorErrorMessage(validatorName: string, validatorValue: any = {}): string { // types
+  getValidatorErrorMessage(
+    validatorName: string,
+    validatorValue: any = {}
+  ): string {
+    // types
     if (!this.validationMessagesFinalConfig[validatorName]) {
       return this.validatorNotSpecified(validatorName);
     }
 
     if (validatorName === 'pattern') {
-      if (!this.validationMessagesFinalConfig[validatorName][validatorValue.requiredPattern]) {
+      if (
+        !this.validationMessagesFinalConfig[validatorName][
+          validatorValue.requiredPattern
+        ]
+      ) {
         return this.validatorNotSpecified(validatorName);
       }
 
-      return this.validationMessagesFinalConfig[validatorName][validatorValue.requiredPattern]
-        .message;
+      return this.validationMessagesFinalConfig[validatorName][
+        validatorValue.requiredPattern
+      ].message;
     }
 
     const validatorMessage = this.validationMessagesFinalConfig[validatorName];
     return validatorMessage.validatorValue
       ? this.interpolateValue(
-        validatorMessage.message,
-        validatorMessage.validatorValueParser
-          ? validatorMessage.validatorValueParser(validatorValue[validatorMessage.validatorValue])
-          : validatorValue[validatorMessage.validatorValue]
-      )
+          validatorMessage.message,
+          validatorMessage.validatorValueParser
+            ? validatorMessage.validatorValueParser(
+                validatorValue[validatorMessage.validatorValue]
+              )
+            : validatorValue[validatorMessage.validatorValue]
+        )
       : validatorMessage.message;
   }
 
-  setValidationMessages(validationMessagesConfig: ValidationMessagesConfig): void {
+  setValidationMessages(
+    validationMessagesConfig: ValidationMessagesConfig
+  ): void {
     const validationMessagesFinalConfig: any = {};
     // Clear memoized cache. Find different way to access clear method
     if ((this.getValidatorErrorMessage as any).clear) {
@@ -54,14 +73,14 @@ export class ValidationMessagesService {
       if (typeof validationMessagesConfig[key] === 'string') {
         validationMessagesFinalConfig[key] = {
           message: validationMessagesConfig[key],
-          validatorValue: this.getValidatorValue(key)
+          validatorValue: this.getValidatorValue(key),
         };
       } else {
         const validator = validationMessagesConfig[key] as ValidationMessage;
         if (validator.pattern) {
           validationMessagesFinalConfig['pattern'] = {
             ...validationMessagesFinalConfig['pattern'],
-            [validator.pattern]: validator
+            [validator.pattern]: validator,
           };
         } else {
           validationMessagesFinalConfig[key] = validator;

@@ -4,7 +4,7 @@ import { ValidationMessagesService } from './validation-messages.service';
 
 describe('ValidationMessagesService', () => {
   let service: ValidationMessagesService;
-  let errorMessages: ValidationMessagesConfig = {
+  const errorMessages: ValidationMessagesConfig = {
     documentType: 'Invalid document type.',
     email: 'Invalid e-mail address.',
     emailDomain: 'Invalid email domain, it should be @valueadd.pl',
@@ -19,12 +19,12 @@ describe('ValidationMessagesService', () => {
     pattern: {
       message: 'patternIssue',
       validatorValue: 'requiredPattern',
-      pattern: '^[a-zA-Z]*$'
-    }
+      pattern: '^[a-zA-Z]*$',
+    },
   };
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ValidationMessagesService]
+      providers: [ValidationMessagesService],
     });
 
     service = TestBed.get(ValidationMessagesService);

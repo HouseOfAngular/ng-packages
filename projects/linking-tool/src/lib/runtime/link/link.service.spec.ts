@@ -19,7 +19,7 @@ describe('LinkService', () => {
     TestBed.configureTestingModule({
       imports: [LinkingToolModule.forRoot(linksMap, linkType)],
     });
-    service = TestBed.get(LinkService);
+    service = TestBed.inject(LinkService);
   });
 
   it('should be created', () => {
@@ -29,7 +29,7 @@ describe('LinkService', () => {
   describe('convertParamsToQueryParamsString', () => {
     it('should return empty string if empty params passed in', () => {
       const params: Params = {};
-      // @ts-ignore
+
       expect(service.convertParamsToQueryParamsString(params)).toBe('');
     });
 
@@ -37,7 +37,7 @@ describe('LinkService', () => {
       const params: Params = {
         param: 'param',
       };
-      // @ts-ignore
+
       expect(service.convertParamsToQueryParamsString(params)).toBe(
         '?param=param'
       );
@@ -48,7 +48,7 @@ describe('LinkService', () => {
         param1: 'param1',
         param2: 'param2',
       };
-      // @ts-ignore
+
       expect(service.convertParamsToQueryParamsString(params)).toBe(
         '?param1=param1&param2=param2'
       );
@@ -70,9 +70,8 @@ describe('LinkService', () => {
       const newLinksMap = {};
       const newLinkType = { ...linkType, anotherLink: 'anotherLinkType' };
       service.init(newLinksMap, newLinkType);
-      // @ts-ignore
+
       expect(service.linksMap).toBe(newLinksMap);
-      // @ts-ignore
       expect(service.linkType).toBe(newLinkType);
     });
   });
@@ -129,7 +128,6 @@ describe('LinkService', () => {
 
     describe('link with params', () => {
       beforeEach(() => {
-        // @ts-ignore
         service.linksMap = { link: 'entity/:id' };
       });
 
@@ -178,7 +176,6 @@ describe('LinkService', () => {
 
   describe('getRouterLink', () => {
     it('should return routerLink when no params in link', () => {
-      // @ts-ignore
       expect(service.getRouterLink({ type: customLinkType })).toEqual({
         path: [customUrl],
       });
@@ -186,12 +183,10 @@ describe('LinkService', () => {
 
     describe('link with params', () => {
       beforeEach(() => {
-        // @ts-ignore
         service.linksMap = { [customLinkType]: `${customUrl}/:id` };
       });
 
       it('should return routerLink with interpolated values', () => {
-        // @ts-ignore
         expect(
           service.getRouterLink({
             type: customLinkType,
@@ -204,7 +199,6 @@ describe('LinkService', () => {
 
       it('should return routerLink with interpolated values and anchor', () => {
         expect(
-          // @ts-ignore
           service.getRouterLink({
             type: customLinkType,
             params: { id: 'test', anchor: 'anchor' },
@@ -217,12 +211,10 @@ describe('LinkService', () => {
 
       it('should return routerLink with interpolated values and skipLocationChange', () => {
         expect(
-          service
-            // @ts-ignore
-            .getRouterLink({
-              type: customLinkType,
-              params: { id: 'test', skipLocationChange: true },
-            })
+          service.getRouterLink({
+            type: customLinkType,
+            params: { id: 'test', skipLocationChange: true },
+          })
         ).toEqual({
           path: [`${customUrl}/test`],
           extras: {
@@ -233,7 +225,6 @@ describe('LinkService', () => {
 
       it('should return routerLink with interpolated values and queryParams', () => {
         expect(
-          // @ts-ignore
           service.getRouterLink({
             type: customLinkType,
             params: {

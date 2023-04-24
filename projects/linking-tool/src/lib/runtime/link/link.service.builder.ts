@@ -1,10 +1,10 @@
-import { LinksMap } from "../resources/models";
-import { LinkType } from "../resources/enums";
-import { LinkService } from "./link.service";
+import { LinksMap } from '../resources/models';
+import { LinkType } from '../resources/enums';
+import { LinkService } from './link.service';
 
 export class LinkServiceBuilder {
-  private linksMap!: LinksMap;
-  private linkType: typeof LinkType;
+  linksMap!: LinksMap;
+  linkType: typeof LinkType;
   private linkService!: LinkService;
 
   constructor() {

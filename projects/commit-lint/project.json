@@ -1,0 +1,50 @@
+{
+  "name": "projects-commit-lint",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "projects/commit-lint/src",
+  "prefix": "app",
+  "tags": [],
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "options": {
+        "project": "projects/commit-lint/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "projects/commit-lint/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "projects/commit-lint/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "projects/commit-lint/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "projects/commit-lint/**/*.ts",
+          "projects/commit-lint/**/*.html"
+        ]
+      }
+    }
+  }
+}

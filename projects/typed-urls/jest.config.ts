@@ -1,7 +1,7 @@
 /* eslint-disable */
 export default {
   displayName: 'projects-typed-urls',
-  preset: '../../jest.preset.js',
+  preset: '../../jest.preset.cjs',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../coverage/projects/typed-urls',
   transform: {

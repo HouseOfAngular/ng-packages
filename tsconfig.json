@@ -10,8 +10,12 @@
     "downlevelIteration": true,
     "useDefineForClassFields": false,
     "paths": {
-      "validation-messages": ["dist/validation-messages"]
-    }
+      "validation-messages": ["dist/projects/validation-messages"],
+      "commit-lint": ["dist/projects/commit-lint"],
+      "linking-tool": ["dist/projects/linking-tool"],
+      "typed-urls": ["dist/projects/typed-urls"]
+    },
+    "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -19,5 +23,9 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "extends": "./tsconfig.base.json"
+  "extends": "./tsconfig.base.json",
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
 }

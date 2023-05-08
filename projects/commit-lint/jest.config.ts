@@ -1,7 +1,7 @@
 /* eslint-disable */
 export default {
   displayName: 'projects-commit-lint',
-  preset: '../../jest.preset.js',
+  preset: '../../jest.preset.cjs',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../coverage/projects/commit-lint',
   transform: {

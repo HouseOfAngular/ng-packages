@@ -1,7 +1,7 @@
 /* eslint-disable */
 export default {
   displayName: 'projects-linking-tool',
-  preset: '../../jest.preset.js',
+  preset: '../../jest.preset.cjs',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../coverage/projects/linking-tool',
   transform: {

@@ -1,6 +1,7 @@
 {
   "name": "ng-packages",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "nx serve",
@@ -9,7 +10,8 @@
     "test": "nx run-many --targets=test --all",
     "lint": "nx run-many --targets=lint --all",
     "release:major": "standard-version --release-as=\"major\"",
-    "release:minor": "standard-version --release-as=\"minor\""
+    "release:minor": "standard-version --release-as=\"minor\"",
+    "publish:latest": "ts-node ./build/publish-latest.ts"
   },
   "private": true,
   "dependencies": {

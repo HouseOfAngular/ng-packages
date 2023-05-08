@@ -1,7 +1,7 @@
 /* eslint-disable */
 export default {
   displayName: 'validation-messages1-example-app',
-  preset: '../../jest.preset.js',
+  preset: '../../jest.preset.cjs',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../coverage/apps/validation-messages1-example-app',
   transform: {

@@ -27,7 +27,7 @@ export async function publishLatestToNpm() {
   }
 
   publishableProjects.forEach((pkg: PackageJson) => {
-    console.log(`Publishing @houseofangular/${pkg}`);
+    console.log(`Publishing @house-of-angular/${pkg}`);
 
     const cmd = [
       'npm publish',
@@ -44,7 +44,7 @@ const publishLatest = createBuilder([
 ]);
 
 publishLatest({
-  scope: '@houseofangular',
+  scope: '@house-of-angular',
   packages,
 }).catch((err) => {
   console.error(err);

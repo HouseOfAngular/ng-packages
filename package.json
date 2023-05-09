@@ -1,6 +1,6 @@
 {
-  "name": "ng-packages",
-  "version": "0.0.0",
+  "name": "@house-of-angular/ng-packages",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "ng": "ng",
@@ -11,7 +11,8 @@
     "lint": "nx run-many --targets=lint --all",
     "release:major": "standard-version --release-as=\"major\"",
     "release:minor": "standard-version --release-as=\"minor\"",
-    "publish:latest": "ts-node ./build/publish-latest.ts"
+    "publish:latest": "ts-node ./build/publish-latest.ts",
+    "update:versions": "ts-node ./build/update-version-numbers.ts"
   },
   "private": true,
   "dependencies": {
@@ -25,6 +26,8 @@
     "@angular/platform-browser": "^15.2.0",
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
+    "commander": "^10.0.1",
+    "glob": "^8.1.0",
     "lodash-decorators": "^6.0.1",
     "rxjs": "~7.8.0",
     "shelljs": "^0.8.5",
@@ -32,8 +35,7 @@
     "symlink-or-copy": "^1.3.1",
     "ts-morph": "^18.0.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.12.0",
-    "commander": "^10.0.1"
+    "zone.js": "~0.12.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.2.4",

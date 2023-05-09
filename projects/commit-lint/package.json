@@ -1,5 +1,5 @@
 {
-  "name": "house-of-angular@commit-lint",
+  "name": "@house-of-angular/commit-lint",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^15.2.0",

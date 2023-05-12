@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'validation-messages1-example-app',
+  displayName: 'validation-messages-example-app',
   preset: '../../jest.preset.cjs',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../coverage/apps/validation-messages1-example-app',
+  coverageDirectory: '../../coverage/apps/validation-messages-example-app',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

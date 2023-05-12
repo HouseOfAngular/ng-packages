@@ -5,6 +5,7 @@ import {
   DoCheck,
   Input,
   OnDestroy,
+  OnInit
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
@@ -17,7 +18,7 @@ import { ValidationMessagesService } from '../../services/validation-messages.se
   templateUrl: './validation-messages.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ValidationMessagesComponent implements OnDestroy, DoCheck {
+export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
   materialErrorMatcher = false;
   errorMessages: string[] = [];
   @Input()
@@ -121,6 +122,10 @@ export class ValidationMessagesComponent implements OnDestroy, DoCheck {
             )
           : message
     );
+  }
+
+  ngOnInit(): void {
+    this.control.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.cd.markForCheck());
   }
 
   ngOnDestroy(): void {

@@ -1,6 +1,6 @@
 import { getGreeting } from '../support/app.po';
 
-describe('validation-messages1-example-app', () => {
+describe('validation-messages-example-app', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display welcome message', () => {
@@ -8,6 +8,6 @@ describe('validation-messages1-example-app', () => {
     cy.login('my-email@something.com', 'myPassword');
 
     // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome validation-messages1-example-app');
+    getGreeting().contains('Welcome validation-messages-example-app');
   });
 });

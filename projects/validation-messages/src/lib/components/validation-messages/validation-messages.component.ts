@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   DoCheck,
@@ -14,6 +15,7 @@ import { ValidationMessagesService } from '../../services/validation-messages.se
 @Component({
   selector: 'ng-validation-messages',
   templateUrl: './validation-messages.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ValidationMessagesComponent implements OnDestroy, DoCheck {
   materialErrorMatcher = false;

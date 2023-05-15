@@ -1,7 +1,19 @@
-# projects-typed-urls
+# TypedUrls
 
-This library was generated with [Nx](https://nx.dev).
+An utility package for creating typed url addresses
 
-## Running unit tests
+## Installation
 
-Run `nx test projects-typed-urls` to execute the unit tests.
+`npm install @house-of-angular/typed-urls --save-dev`
+
+## Usage
+
+Based on provided value `urlFactory` will indicate whether any params are expected. It will throw an error in case they are.
+
+```ts
+import { urlFactory } from '@house-of-angular/typed-urls';
+
+const url = urlFactory('http://api-domain/users/:id');
+
+console.log(url.url({ id: '1234' }));
+```

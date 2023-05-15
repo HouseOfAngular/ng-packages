@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { ApiErrorMessage } from '../../../../projects/validation-messages/src';
@@ -13,6 +13,7 @@ const validationConfig = {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   form = this.fb.group({

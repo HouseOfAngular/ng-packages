@@ -7,8 +7,7 @@
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-
-// eslint-disable-next-line @typescript-eslint/no-namespace
+// eslint-disable-next-line
 declare namespace Cypress {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {

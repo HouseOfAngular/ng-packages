@@ -1,0 +1,11 @@
+<form [formGroup]="userForm" (ngSubmit)="fetchUser()">
+  <mat-form-field>
+    <mat-label>User Id</mat-label>
+    <input matInput formControlName="userId" />
+  </mat-form-field>
+  <button mat-button type="submit" [disabled]="userForm.invalid">
+    Fetch User
+  </button>
+</form>
+
+<app-user-details [user]="user$ | async"></app-user-details>

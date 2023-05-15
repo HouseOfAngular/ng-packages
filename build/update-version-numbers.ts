@@ -1,7 +1,8 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { EOL } from 'os';
 import * as readline from 'readline';
-import * as glob from 'glob';
+import pkg from 'glob';
+const { glob } = pkg;
 import { packages } from './config';
 import { createBuilder } from './utils';
 

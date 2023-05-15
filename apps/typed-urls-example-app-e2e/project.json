@@ -1,0 +1,33 @@
+{
+  "name": "typed-urls-example-app-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/typed-urls-example-app-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/typed-urls-example-app-e2e/cypress.config.ts",
+        "devServerTarget": "typed-urls-example-app:serve:development",
+        "testingType": "e2e"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "typed-urls-example-app:serve:production"
+        },
+        "ci": {
+          "devServerTarget": "typed-urls-example-app:serve-static"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/typed-urls-example-app-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["typed-urls-example-app"]
+}

@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { angularValidatorsWithValueMap, Parser, ValidationMessage, ValidationMessagesConfig } from '../resources';
+import {
+  angularValidatorsWithValueMap,
+  Parser,
+  ValidationMessage,
+  ValidationMessagesConfig,
+} from '../resources';
 import { KeyValue } from '@angular/common';
 import { getInterpolableParams, getPropByPath } from '../utils';
 
@@ -18,7 +23,6 @@ export class ValidationMessagesService {
     return this._materialErrorMatcher;
   }
 
-  // @Memoize()
   getValidatorErrorMessage(
     validatorName: string,
     validatorValue: any = {}
@@ -38,17 +42,20 @@ export class ValidationMessagesService {
       return this.interpolateMessageErrors(message.message, validatorValue);
     }
 
-    const message = this.interpolateMessageErrors(validatorMessage.message, validatorValue);
+    const message = this.interpolateMessageErrors(
+      validatorMessage.message,
+      validatorValue
+    );
 
     return validatorMessage.validatorValue
       ? this.interpolateValue(
-        message,
-        validatorMessage.validatorValueParser
-          ? validatorMessage.validatorValueParser(
-            validatorValue[validatorMessage.validatorValue]
-          )
-          : validatorValue[validatorMessage.validatorValue]
-      )
+          message,
+          validatorMessage.validatorValueParser
+            ? validatorMessage.validatorValueParser(
+                validatorValue[validatorMessage.validatorValue]
+              )
+            : validatorValue[validatorMessage.validatorValue]
+        )
       : message;
   }
 
@@ -56,10 +63,6 @@ export class ValidationMessagesService {
     validationMessagesConfig: ValidationMessagesConfig
   ): void {
     const validationMessagesFinalConfig: any = {};
-    // Clear memoized cache. Find different way to access clear method
-    // if ((this.getValidatorErrorMessage as any).clear) {
-    //   (this.getValidatorErrorMessage as any).clear();
-    // }
 
     // Set validation errorMessages
     for (const key in validationMessagesConfig) {
@@ -108,7 +111,10 @@ export class ValidationMessagesService {
     }
   }
 
-  private interpolateMessageErrors(message: string, validatorValue: KeyValue<string, any>) {
+  private interpolateMessageErrors(
+    message: string,
+    validatorValue: KeyValue<string, any>
+  ) {
     // Interpolate non-default parameters with values from error object
     return getInterpolableParams(message).reduce((message, param) => {
       const prop = getPropByPath(validatorValue, param);

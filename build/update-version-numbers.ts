@@ -6,6 +6,11 @@ const { glob } = pkg;
 import { packages } from './config';
 import { createBuilder } from './utils';
 
+const CONFIG = {
+  readmeFile: './README.md',
+  currentVersion: JSON.parse(readFileSync('./package.json', 'utf-8')).version,
+};
+
 const [newVersion] = process.argv.slice(2);
 
 const packagesName = '@house-of-angular';
@@ -27,6 +32,7 @@ if (newVersion) {
 function updateVersions(version: string) {
   const publishNext = createBuilder([
     ['Update package.json', createPackageJsonBuilder(version)],
+    ['Update readme.md', updateReadmeFile(version)],
   ]);
 
   publishNext({
@@ -74,4 +80,27 @@ function createPackageJsonBuilder(version: string) {
 function writeAsJson(path: string, json: object) {
   const content = JSON.stringify(json, null, 2);
   writeFileSync(path, `${content}${EOL}`);
+}
+
+/**
+ * Creates a readme file when the latest version changes
+ */
+function updateReadmeFile(version: string) {
+  return async () => {
+    if (version === CONFIG.currentVersion) {
+      return;
+    }
+
+    const readmePlaceholder = `# @house-of-angular Packages
+
+A collection of packages, modules and utilities for Angular developers.
+
+| Package                                                       | Description                                                                     | Version | Changelog                                                |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------- | -------------------------------------------------------- |
+| [Validation messages](projects/validation-messages/README.md) | Package for handling validation messages in Angular                             | ${version}  | [changelog](./packages/validation-messages/CHANGELOG.md) |
+| [Commit lint](projects/commit-lint/README.md)                 | Package for handling validation of commits, nx tags, branch and code formatting | ${version}  | [changelog](./packages/commit-lint/CHANGELOG.md)         |
+| [Typed Urls](projects/typed-urls/README.md)                   | Package for creating typed url addresses                                        | ${version}  | [changelog](./packages/commit-lint/CHANGELOG.md)         |
+`;
+    writeFileSync(CONFIG.readmeFile, readmePlaceholder);
+  };
 }

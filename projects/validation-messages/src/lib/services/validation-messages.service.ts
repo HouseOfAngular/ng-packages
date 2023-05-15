@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { angularValidatorsWithValueMap } from '../resources';
 import {
+  angularValidatorsWithValueMap,
   Parser,
   ValidationMessage,
   ValidationMessagesConfig,
 } from '../resources';
-import { Memoize } from 'lodash-decorators';
+import { KeyValue } from '@angular/common';
+import { getInterpolableParams, getPropByPath } from '../utils';
 
 @Injectable({
   providedIn: 'root',
@@ -22,51 +23,46 @@ export class ValidationMessagesService {
     return this._materialErrorMatcher;
   }
 
-  @Memoize()
   getValidatorErrorMessage(
     validatorName: string,
     validatorValue: any = {}
   ): string {
     // types
-    if (!this.validationMessagesFinalConfig[validatorName]) {
+    const validatorMessage = this.validationMessagesFinalConfig[validatorName];
+    if (!validatorMessage) {
       return this.validatorNotSpecified(validatorName);
     }
 
     if (validatorName === 'pattern') {
-      if (
-        !this.validationMessagesFinalConfig[validatorName][
-          validatorValue.requiredPattern
-        ]
-      ) {
+      const message = validatorMessage[validatorValue.requiredPattern];
+      if (!message) {
         return this.validatorNotSpecified(validatorName);
       }
 
-      return this.validationMessagesFinalConfig[validatorName][
-        validatorValue.requiredPattern
-      ].message;
+      return this.interpolateMessageErrors(message.message, validatorValue);
     }
 
-    const validatorMessage = this.validationMessagesFinalConfig[validatorName];
+    const message = this.interpolateMessageErrors(
+      validatorMessage.message,
+      validatorValue
+    );
+
     return validatorMessage.validatorValue
       ? this.interpolateValue(
-          validatorMessage.message,
+          message,
           validatorMessage.validatorValueParser
             ? validatorMessage.validatorValueParser(
                 validatorValue[validatorMessage.validatorValue]
               )
             : validatorValue[validatorMessage.validatorValue]
         )
-      : validatorMessage.message;
+      : message;
   }
 
   setValidationMessages(
     validationMessagesConfig: ValidationMessagesConfig
   ): void {
     const validationMessagesFinalConfig: any = {};
-    // Clear memoized cache. Find different way to access clear method
-    if ((this.getValidatorErrorMessage as any).clear) {
-      (this.getValidatorErrorMessage as any).clear();
-    }
 
     // Set validation errorMessages
     for (const key in validationMessagesConfig) {
@@ -113,6 +109,18 @@ export class ValidationMessagesService {
     } else {
       console.error('Template matcher must be a regex.');
     }
+  }
+
+  private interpolateMessageErrors(
+    message: string,
+    validatorValue: KeyValue<string, any>
+  ) {
+    // Interpolate non-default parameters with values from error object
+    return getInterpolableParams(message).reduce((message, param) => {
+      const prop = getPropByPath(validatorValue, param);
+      if (prop === undefined) return message;
+      return message.replaceAll(`{{${param}}}`, prop);
+    }, message);
   }
 
   private interpolateValue(str: string, value: any): string {

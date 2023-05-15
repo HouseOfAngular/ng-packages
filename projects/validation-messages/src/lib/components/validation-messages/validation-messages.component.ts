@@ -5,7 +5,7 @@ import {
   DoCheck,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
@@ -125,7 +125,9 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   ngOnInit(): void {
-    this.control.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.cd.markForCheck());
+    this.control.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.cd.markForCheck());
   }
 
   ngOnDestroy(): void {
@@ -146,20 +148,23 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
   private updateErrorMessages(): void {
     this.errorMessages = [];
 
-    if (this.control && this.control.errors) {
-      for (const propertyName in this.control.errors) {
-        if (
-          this.control.errors[propertyName] &&
-          propertyName !== 'server' &&
-          !(!this.multiple && this.errorMessages.length === 1)
-        ) {
-          this.errorMessages.push(
-            this.validationMessagesService.getValidatorErrorMessage(
-              propertyName,
-              this.control.errors[propertyName]
-            )
-          );
-        }
+    if (!this.control || !this.control.errors) {
+      return;
+    }
+
+    const controlErrors = this.control.errors;
+    for (const propertyName in controlErrors) {
+      if (!this.multiple && this.errorMessages.length === 1) {
+        break;
+      }
+
+      if (controlErrors[propertyName] && propertyName !== 'server') {
+        this.errorMessages.push(
+          this.validationMessagesService.getValidatorErrorMessage(
+            propertyName,
+            controlErrors[propertyName]
+          )
+        );
       }
     }
   }

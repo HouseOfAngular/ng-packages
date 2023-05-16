@@ -7,7 +7,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { ControlContainer, FormControl } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ApiErrorMessage } from '../../resources/interfaces';
@@ -23,6 +23,8 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
   errorMessages: string[] = [];
   @Input()
   control!: FormControl;
+  @Input()
+  controlName!: string;
   showServerErrors = false;
   parsedApiErrorMessages: string[] = [];
   valueChanges: Subscription | null = null;
@@ -30,7 +32,8 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
 
   constructor(
     private cd: ChangeDetectorRef,
-    private validationMessagesService: ValidationMessagesService
+    private validationMessagesService: ValidationMessagesService,
+    private controlContainer: ControlContainer
   ) {
     this.unsubscribeAndClearValueChanges =
       this.unsubscribeAndClearValueChanges.bind(this);
@@ -125,6 +128,8 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   ngOnInit(): void {
+    this.readFormControl();
+
     this.control.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => this.cd.markForCheck());
@@ -181,5 +186,16 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
 
     this.showServerErrors = false;
     this.valueChanges = null;
+  }
+
+  private readFormControl() {
+    if (this.controlName === undefined) {
+      return;
+    }
+    const control = this.controlContainer.control?.get(this.controlName);
+    if (!(control instanceof FormControl)) {
+      return;
+    }
+    this.control = control as FormControl;
   }
 }

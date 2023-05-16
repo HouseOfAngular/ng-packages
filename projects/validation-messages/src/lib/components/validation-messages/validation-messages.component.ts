@@ -12,7 +12,10 @@ import {
 import { ControlContainer, FormControl } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ApiErrorMessage } from '../../resources/interfaces';
+import {
+  ApiErrorMessage,
+  ValidationMessagesConfig,
+} from '../../resources/interfaces';
 import { ValidationMessagesService } from '../../services/validation-messages.service';
 import { MatFormField } from '@angular/material/form-field';
 
@@ -33,6 +36,7 @@ export class ValidationMessagesComponent
   materialErrorMatcher = false;
   errorMessages: string[] = [];
 
+  @Input() validationMessages: ValidationMessagesConfig = {};
   @Input() control!: FormControl;
   @Input() controlName!: string;
 
@@ -174,7 +178,8 @@ export class ValidationMessagesComponent
         this.errorMessages.push(
           this.validationMessagesService.getValidatorErrorMessage(
             propertyName,
-            controlErrors[propertyName]
+            controlErrors[propertyName],
+            this.validationMessages
           )
         );
       }

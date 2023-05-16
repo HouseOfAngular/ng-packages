@@ -1,36 +1,63 @@
 import {
+  AfterContentInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   DoCheck,
+  Host,
   Input,
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import {
+  AbstractControl,
+  AbstractControlDirective,
+  ControlContainer,
+  FormControl,
+} from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ApiErrorMessage } from '../../resources/interfaces';
+import {
+  ApiErrorMessage,
+  ValidationMessagesConfig,
+} from '../../resources/interfaces';
 import { ValidationMessagesService } from '../../services/validation-messages.service';
+import {
+  MatFormField,
+  MatFormFieldControl,
+} from '@angular/material/form-field';
+
+type ApiErrorMessages =
+  | Array<ApiErrorMessage | string>
+  | ApiErrorMessage
+  | string
+  | null;
 
 @Component({
   selector: 'ng-validation-messages',
   templateUrl: './validation-messages.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
+export class ValidationMessagesComponent
+  implements OnInit, OnDestroy, DoCheck, AfterContentInit
+{
   materialErrorMatcher = false;
-  errorMessages: string[] = [];
-  @Input()
-  control!: FormControl;
+  shownErrors: string[] = [];
+
+  @Input() errorsMessages: ValidationMessagesConfig = {};
+  @Input() control!: FormControl;
+  @Input() controlName!: string;
+
   showServerErrors = false;
   parsedApiErrorMessages: string[] = [];
   valueChanges: Subscription | null = null;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   constructor(
+    @Host() protected host: MatFormField,
     private cd: ChangeDetectorRef,
-    private validationMessagesService: ValidationMessagesService
+    private validationMessagesService: ValidationMessagesService,
+    private controlContainer: ControlContainer
   ) {
     this.unsubscribeAndClearValueChanges =
       this.unsubscribeAndClearValueChanges.bind(this);
@@ -49,28 +76,14 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
     this.updateErrorMessages();
   }
 
-  private _apiErrorMessages:
-    | Array<ApiErrorMessage | string>
-    | ApiErrorMessage
-    | string
-    | null = null;
+  private _apiErrorMessages: ApiErrorMessages = null;
 
-  get apiErrorMessages():
-    | Array<ApiErrorMessage | string>
-    | ApiErrorMessage
-    | string
-    | null {
+  get apiErrorMessages(): ApiErrorMessages {
     return this._apiErrorMessages;
   }
 
   @Input()
-  set apiErrorMessages(
-    apiErrorMessages:
-      | Array<ApiErrorMessage | string>
-      | ApiErrorMessage
-      | string
-      | null
-  ) {
+  set apiErrorMessages(apiErrorMessages: ApiErrorMessages) {
     this.unsubscribeAndClearValueChanges();
     this._apiErrorMessages = apiErrorMessages;
     this.parseApiErrorMessages(this._apiErrorMessages);
@@ -85,6 +98,17 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
     }
   }
 
+  get matInputControl(): AbstractControl | AbstractControlDirective | null {
+    if (this.matInputRef?.ngControl) {
+      return this.matInputRef.ngControl.control || this.matInputRef.ngControl;
+    }
+    return null;
+  }
+
+  get matInputRef(): MatFormFieldControl<any> {
+    return this.host._control;
+  }
+
   observeInputValueChanges(): void {
     if (!this.valueChanges) {
       this.valueChanges = this.control.valueChanges
@@ -97,13 +121,7 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
     }
   }
 
-  parseApiErrorMessages(
-    apiErrorMessages:
-      | Array<ApiErrorMessage | string>
-      | ApiErrorMessage
-      | string
-      | null
-  ): void {
+  parseApiErrorMessages(apiErrorMessages: ApiErrorMessages): void {
     if (!apiErrorMessages) {
       this.parsedApiErrorMessages = [];
       return;
@@ -125,6 +143,12 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   ngOnInit(): void {
+    this.readFormControlByControlName();
+  }
+
+  ngAfterContentInit(): void {
+    this.readFormControlFromHost();
+
     this.control.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => this.cd.markForCheck());
@@ -139,14 +163,15 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
     if (
       this.control &&
       ((this.control.invalid && this.control.touched) ||
-        (!this.control.invalid && this.errorMessages.length > 0))
+        (!this.control.invalid && this.shownErrors.length > 0))
     ) {
       this.updateErrorMessages();
+      this.cd.markForCheck();
     }
   }
 
   private updateErrorMessages(): void {
-    this.errorMessages = [];
+    this.shownErrors = [];
 
     if (!this.control || !this.control.errors) {
       return;
@@ -154,15 +179,16 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
 
     const controlErrors = this.control.errors;
     for (const propertyName in controlErrors) {
-      if (!this.multiple && this.errorMessages.length === 1) {
+      if (!this.multiple && this.shownErrors.length === 1) {
         break;
       }
 
       if (controlErrors[propertyName] && propertyName !== 'server') {
-        this.errorMessages.push(
+        this.shownErrors.push(
           this.validationMessagesService.getValidatorErrorMessage(
             propertyName,
-            controlErrors[propertyName]
+            controlErrors[propertyName],
+            this.errorsMessages
           )
         );
       }
@@ -181,5 +207,31 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
 
     this.showServerErrors = false;
     this.valueChanges = null;
+  }
+
+  private readFormControlByControlName(): void {
+    if (this.controlName === undefined) {
+      return;
+    }
+
+    const control = this.controlContainer.control?.get(this.controlName);
+
+    if (!(control instanceof FormControl)) {
+      return;
+    }
+
+    this.control = control as FormControl;
+  }
+
+  private readFormControlFromHost(): void {
+    if (this.control !== undefined) {
+      return;
+    }
+
+    if (!(this.matInputControl instanceof FormControl)) {
+      return;
+    }
+
+    this.control = this.matInputControl;
   }
 }

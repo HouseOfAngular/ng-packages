@@ -5,6 +5,6 @@ import { ValidationMessagesComponent } from './components/validation-messages/va
 @NgModule({
   imports: [CommonModule],
   declarations: [ValidationMessagesComponent],
-  exports: [ValidationMessagesComponent]
+  exports: [ValidationMessagesComponent],
 })
 export class ValidationMessagesModule {}

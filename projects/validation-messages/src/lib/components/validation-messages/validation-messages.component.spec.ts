@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, Validators } from '@angular/forms';
+import { ControlContainer, FormControl, Validators } from '@angular/forms';
 import { ValidationMessagesModule } from '../../validation-messages.module';
 import { ValidationMessagesComponent } from './validation-messages.component';
+import { MatFormField } from '@angular/material/form-field';
 
 describe('ValidationMessagesComponent', () => {
   let component: ValidationMessagesComponent;
@@ -12,13 +13,22 @@ describe('ValidationMessagesComponent', () => {
     Validators.max(10),
     Validators.maxLength(10),
     Validators.minLength(3),
-    Validators.required
+    Validators.required,
   ]);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ValidationMessagesModule]
-    }).compileComponents();
+      imports: [ValidationMessagesModule],
+    })
+      .overrideComponent(ValidationMessagesComponent, {
+        add: {
+          providers: [
+            { provide: ControlContainer, useValue: {} },
+            { provide: MatFormField, useValue: {} },
+          ],
+        },
+      })
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -3,12 +3,6 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { ApiErrorMessage } from '../../../../projects/validation-messages/src';
 
-const validationConfig = {
-  nameMinLength: 4,
-  nameMaxLength: 255,
-  commentMaxLength: 2048,
-};
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -21,20 +15,19 @@ export class AppComponent {
     name: [
       '',
       [
-        Validators.minLength(validationConfig.nameMinLength),
-        Validators.maxLength(validationConfig.nameMaxLength),
+        Validators.minLength(4),
+        Validators.maxLength(255),
         Validators.required,
-        Validators.pattern('[a-zA-Z]*'),
+        Validators.pattern('^[a-zA-Z]*$'),
       ],
     ],
-    comment: ['', [Validators.maxLength(validationConfig.commentMaxLength)]],
+    number: ['', [Validators.min(10), Validators.max(99)]],
   });
   apiErrors: Array<ApiErrorMessage | string> = [
     { property: 'dodo', message: 'DoDuCheck' },
     { property: 'dodo', message: 'DoDuCheck' },
     'erroooor',
   ];
-  apiError: ApiErrorMessage = { property: 'dodo', message: 'DoDuCheck' };
   multiple = false;
 
   constructor(private fb: FormBuilder) {}

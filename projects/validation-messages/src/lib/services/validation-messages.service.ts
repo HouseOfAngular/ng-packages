@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import {
-  angularValidatorsWithValueMap,
   Parser,
   ValidationMessage,
   ValidationMessagesConfig,
 } from '../resources';
 import { KeyValue } from '@angular/common';
 import { getInterpolableParams, getPropByPath } from '../utils';
+import { mergeValidationMessagesConfigs } from '../utils/merge-validation-messages-configs.util';
 
 @Injectable({
   providedIn: 'root',
@@ -25,10 +25,16 @@ export class ValidationMessagesService {
 
   getValidatorErrorMessage(
     validatorName: string,
-    validatorValue: any = {}
+    validatorValue: any = {},
+    localValidationMessagesConfig: ValidationMessagesConfig = {}
   ): string {
     // types
-    const validatorMessage = this.validationMessagesFinalConfig[validatorName];
+    const validationMessages = mergeValidationMessagesConfigs(
+      this.validationMessagesFinalConfig,
+      localValidationMessagesConfig
+    ) as { [p: string]: any };
+
+    const validatorMessage = validationMessages[validatorName];
     if (!validatorMessage) {
       return this.validatorNotSpecified(validatorName);
     }
@@ -62,29 +68,9 @@ export class ValidationMessagesService {
   setValidationMessages(
     validationMessagesConfig: ValidationMessagesConfig
   ): void {
-    const validationMessagesFinalConfig: any = {};
-
     // Set validation errorMessages
-    for (const key in validationMessagesConfig) {
-      if (typeof validationMessagesConfig[key] === 'string') {
-        validationMessagesFinalConfig[key] = {
-          message: validationMessagesConfig[key],
-          validatorValue: this.getValidatorValue(key),
-        };
-      } else {
-        const validator = validationMessagesConfig[key] as ValidationMessage;
-        if (validator.pattern) {
-          validationMessagesFinalConfig['pattern'] = {
-            ...validationMessagesFinalConfig['pattern'],
-            [validator.pattern]: validator,
-          };
-        } else {
-          validationMessagesFinalConfig[key] = validator;
-        }
-      }
-    }
-
-    this.validationMessagesFinalConfig = { ...validationMessagesFinalConfig };
+    const config = mergeValidationMessagesConfigs({}, validationMessagesConfig);
+    this.validationMessagesFinalConfig = { ...config };
   }
 
   setServerMessagesParser(serverMessageParser: Parser): void {
@@ -125,10 +111,6 @@ export class ValidationMessagesService {
 
   private interpolateValue(str: string, value: any): string {
     return str.replace(new RegExp(this.templateMatcher), value);
-  }
-
-  private getValidatorValue(key: string): string {
-    return (angularValidatorsWithValueMap as any)[key] || key; // types
   }
 
   private validatorNotSpecified(validatorName: string): string {

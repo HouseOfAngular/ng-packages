@@ -1,8 +1,10 @@
 import {
+  AfterContentInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   DoCheck,
+  Host,
   Input,
   OnDestroy,
   OnInit,
@@ -12,6 +14,13 @@ import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ApiErrorMessage } from '../../resources/interfaces';
 import { ValidationMessagesService } from '../../services/validation-messages.service';
+import { MatFormField } from '@angular/material/form-field';
+
+type ApiErrorMessages =
+  | Array<ApiErrorMessage | string>
+  | ApiErrorMessage
+  | string
+  | null;
 
 @Component({
   selector: 'ng-validation-messages',
@@ -21,10 +30,10 @@ import { ValidationMessagesService } from '../../services/validation-messages.se
 export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
   materialErrorMatcher = false;
   errorMessages: string[] = [];
-  @Input()
-  control!: FormControl;
-  @Input()
-  controlName!: string;
+
+  @Input() control!: FormControl;
+  @Input() controlName!: string;
+
   showServerErrors = false;
   parsedApiErrorMessages: string[] = [];
   valueChanges: Subscription | null = null;
@@ -33,7 +42,8 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
   constructor(
     private cd: ChangeDetectorRef,
     private validationMessagesService: ValidationMessagesService,
-    private controlContainer: ControlContainer
+    private controlContainer: ControlContainer,
+    @Host() protected host: MatFormField
   ) {
     this.unsubscribeAndClearValueChanges =
       this.unsubscribeAndClearValueChanges.bind(this);
@@ -52,28 +62,14 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
     this.updateErrorMessages();
   }
 
-  private _apiErrorMessages:
-    | Array<ApiErrorMessage | string>
-    | ApiErrorMessage
-    | string
-    | null = null;
+  private _apiErrorMessages: ApiErrorMessages = null;
 
-  get apiErrorMessages():
-    | Array<ApiErrorMessage | string>
-    | ApiErrorMessage
-    | string
-    | null {
+  get apiErrorMessages(): ApiErrorMessages {
     return this._apiErrorMessages;
   }
 
   @Input()
-  set apiErrorMessages(
-    apiErrorMessages:
-      | Array<ApiErrorMessage | string>
-      | ApiErrorMessage
-      | string
-      | null
-  ) {
+  set apiErrorMessages(apiErrorMessages: ApiErrorMessages) {
     this.unsubscribeAndClearValueChanges();
     this._apiErrorMessages = apiErrorMessages;
     this.parseApiErrorMessages(this._apiErrorMessages);
@@ -88,6 +84,17 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
     }
   }
 
+  get matInputControl() {
+    if (this.matInputRef && this.matInputRef.ngControl) {
+      return this.matInputRef.ngControl.control || this.matInputRef.ngControl;
+    }
+    return null;
+  }
+
+  get matInputRef() {
+    return this.host._control;
+  }
+
   observeInputValueChanges(): void {
     if (!this.valueChanges) {
       this.valueChanges = this.control.valueChanges
@@ -100,13 +107,7 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
     }
   }
 
-  parseApiErrorMessages(
-    apiErrorMessages:
-      | Array<ApiErrorMessage | string>
-      | ApiErrorMessage
-      | string
-      | null
-  ): void {
+  parseApiErrorMessages(apiErrorMessages: ApiErrorMessages): void {
     if (!apiErrorMessages) {
       this.parsedApiErrorMessages = [];
       return;

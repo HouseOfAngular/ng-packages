@@ -27,7 +27,9 @@ type ApiErrorMessages =
   templateUrl: './validation-messages.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
+export class ValidationMessagesComponent
+  implements OnInit, OnDestroy, DoCheck, AfterContentInit
+{
   materialErrorMatcher = false;
   errorMessages: string[] = [];
 
@@ -129,7 +131,11 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   ngOnInit(): void {
-    this.readFormControl();
+    this.readFormControlByControlName();
+  }
+
+  ngAfterContentInit(): void {
+    this.readFormControlFromHost();
 
     this.control.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -189,7 +195,7 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
     this.valueChanges = null;
   }
 
-  private readFormControl() {
+  private readFormControlByControlName() {
     if (this.controlName === undefined) {
       return;
     }
@@ -198,5 +204,15 @@ export class ValidationMessagesComponent implements OnInit, OnDestroy, DoCheck {
       return;
     }
     this.control = control as FormControl;
+  }
+
+  private readFormControlFromHost() {
+    if (this.control !== undefined) {
+      return;
+    }
+    if (!(this.matInputControl instanceof FormControl)) {
+      return;
+    }
+    this.control = this.matInputControl;
   }
 }

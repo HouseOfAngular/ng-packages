@@ -34,9 +34,9 @@ export class ValidationMessagesComponent
   implements OnInit, OnDestroy, DoCheck, AfterContentInit
 {
   materialErrorMatcher = false;
-  errorMessages: string[] = [];
+  shownErrors: string[] = [];
 
-  @Input() validationMessages: ValidationMessagesConfig = {};
+  @Input() errorsMessages: ValidationMessagesConfig = {};
   @Input() control!: FormControl;
   @Input() controlName!: string;
 
@@ -155,7 +155,7 @@ export class ValidationMessagesComponent
     if (
       this.control &&
       ((this.control.invalid && this.control.touched) ||
-        (!this.control.invalid && this.errorMessages.length > 0))
+        (!this.control.invalid && this.shownErrors.length > 0))
     ) {
       this.updateErrorMessages();
       this.cd.markForCheck();
@@ -163,7 +163,7 @@ export class ValidationMessagesComponent
   }
 
   private updateErrorMessages(): void {
-    this.errorMessages = [];
+    this.shownErrors = [];
 
     if (!this.control || !this.control.errors) {
       return;
@@ -171,16 +171,16 @@ export class ValidationMessagesComponent
 
     const controlErrors = this.control.errors;
     for (const propertyName in controlErrors) {
-      if (!this.multiple && this.errorMessages.length === 1) {
+      if (!this.multiple && this.shownErrors.length === 1) {
         break;
       }
 
       if (controlErrors[propertyName] && propertyName !== 'server') {
-        this.errorMessages.push(
+        this.shownErrors.push(
           this.validationMessagesService.getValidatorErrorMessage(
             propertyName,
             controlErrors[propertyName],
-            this.validationMessages
+            this.errorsMessages
           )
         );
       }

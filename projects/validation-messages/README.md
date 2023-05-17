@@ -115,11 +115,11 @@ Alternatively, you can manually pass the control to the ValidationMessagesCompon
 
 ### Local validator messages
 
-You can extend and override the global validator messages by specifying local validator messages using the `validationMessages` input:
+You can extend and override the global validator messages by specifying local validator messages using the `errorsMessages` input:
 
 ```html
 <ng-validation-messages
-  [validationMessages]="{
+  [errorsMessages]="{
       minlength: 'Required characters: {{actualLength}}/{{requiredLength}}',
     }"
 ></ng-validation-messages>
@@ -145,7 +145,7 @@ You can specify parameters in the error messages using `{{parameterName}}`. Thes
 
 ##### Inputs:
 
-`validationMessages: ValidationMessagesConfig`: Defines the local validation messages configuration. This configuration extends the global configuration.
+`errorsMessages: ValidationMessagesConfig`: Defines the local validation messages configuration. This configuration extends the global configuration.
 
 `multiple: boolean`: Specifies whether to show multiple error messages (default: false)
 

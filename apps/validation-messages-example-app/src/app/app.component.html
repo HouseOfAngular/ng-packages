@@ -1,28 +1,51 @@
-<form [formGroup]="form">
-  <div class="dialog__content">
-    <mat-form-field appearance="fill">
+<form [formGroup]="form" class="form">
+  <div>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+      <mat-error>
+        <!-- component retrieves form control from mat-form-field -->
+        <!-- global messages are extended/overridden by a local config -->
+        <ng-validation-messages
+          [validationMessages]="{
+            emailDomain: 'Email domain error: \'{{parsedDomain}}\' is not a valid domain',
+            email: 'Invalid email (local config message)'
+            }"
+          [multiple]="multiple"
+        ></ng-validation-messages>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" />
       <mat-error>
-        <!--        todo types-->
+        <!-- component uses control passed in [control] -->
+        <!-- show api error messages -->
         <ng-validation-messages
-          [control]="$any(form.get('name'))"
+          [control]="form.controls.name"
           [multiple]="multiple"
           [apiErrorMessages]="apiErrors"
         ></ng-validation-messages>
       </mat-error>
     </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput type="email" formControlName="email" />
+
+    <mat-form-field>
+      <mat-label>Number</mat-label>
+      <input matInput type="number" formControlName="number" />
       <mat-error>
-        <!--        todo types-->
+        <!-- component uses control passed in controlName -->
         <ng-validation-messages
-          [control]="$any(form.get('email'))"
+          controlName="number"
+          [multiple]="multiple"
         ></ng-validation-messages>
       </mat-error>
     </mat-form-field>
-    <button (click)="multiple = !multiple">Change multiple</button
-    >{{ multiple }}
   </div>
+
+  <button mat-raised-button color="primary" (click)="multiple = !multiple" class="form__button">
+    Toggle multiple errors
+  </button>
+
+  <p>Show multiple errors: {{ multiple }}</p>
 </form>

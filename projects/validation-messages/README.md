@@ -166,7 +166,7 @@ export interface ValidationMessage {
   templateMatcher?: RegExp;
 }
 ```
-`validatorValue`: specifies the name of the property under the validator name in Form Control errrors object from where the value for interpolation will be taken.
+`validatorValue`: specifies the name of the property under the validator name in Form Control errors object from where the value for interpolation will be taken.
 
 `validatorValueParser`: specifies a function to parse the validator value
 

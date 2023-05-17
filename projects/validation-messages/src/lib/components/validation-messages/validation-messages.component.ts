@@ -9,7 +9,12 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { ControlContainer, FormControl } from '@angular/forms';
+import {
+  AbstractControl,
+  AbstractControlDirective,
+  ControlContainer,
+  FormControl,
+} from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {
@@ -17,7 +22,10 @@ import {
   ValidationMessagesConfig,
 } from '../../resources/interfaces';
 import { ValidationMessagesService } from '../../services/validation-messages.service';
-import { MatFormField } from '@angular/material/form-field';
+import {
+  MatFormField,
+  MatFormFieldControl,
+} from '@angular/material/form-field';
 
 type ApiErrorMessages =
   | Array<ApiErrorMessage | string>
@@ -46,10 +54,10 @@ export class ValidationMessagesComponent
   private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   constructor(
+    @Host() protected host: MatFormField,
     private cd: ChangeDetectorRef,
     private validationMessagesService: ValidationMessagesService,
-    private controlContainer: ControlContainer,
-    @Host() protected host: MatFormField
+    private controlContainer: ControlContainer
   ) {
     this.unsubscribeAndClearValueChanges =
       this.unsubscribeAndClearValueChanges.bind(this);
@@ -90,14 +98,14 @@ export class ValidationMessagesComponent
     }
   }
 
-  get matInputControl() {
-    if (this.matInputRef && this.matInputRef.ngControl) {
+  get matInputControl(): AbstractControl | AbstractControlDirective | null {
+    if (this.matInputRef?.ngControl) {
       return this.matInputRef.ngControl.control || this.matInputRef.ngControl;
     }
     return null;
   }
 
-  get matInputRef() {
+  get matInputRef(): MatFormFieldControl<any> {
     return this.host._control;
   }
 
@@ -201,24 +209,29 @@ export class ValidationMessagesComponent
     this.valueChanges = null;
   }
 
-  private readFormControlByControlName() {
+  private readFormControlByControlName(): void {
     if (this.controlName === undefined) {
       return;
     }
+
     const control = this.controlContainer.control?.get(this.controlName);
+
     if (!(control instanceof FormControl)) {
       return;
     }
+
     this.control = control as FormControl;
   }
 
-  private readFormControlFromHost() {
+  private readFormControlFromHost(): void {
     if (this.control !== undefined) {
       return;
     }
+
     if (!(this.matInputControl instanceof FormControl)) {
       return;
     }
+
     this.control = this.matInputControl;
   }
 }

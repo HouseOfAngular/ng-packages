@@ -158,6 +158,7 @@ export class ValidationMessagesComponent
         (!this.control.invalid && this.errorMessages.length > 0))
     ) {
       this.updateErrorMessages();
+      this.cd.markForCheck();
     }
   }
 

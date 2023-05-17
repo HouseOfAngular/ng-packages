@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
-import * as shelljs from 'shelljs';
+import pkg from 'shelljs';
+const shelljs = pkg;
 import { packages } from './config';
 import { createBuilder } from './utils';
 
@@ -31,7 +32,7 @@ export async function publishLatestToNpm() {
 
     const cmd = [
       'npm publish',
-      `./dist/projects/${pkg}/package.json`,
+      `./dist/projects/${pkg}`,
       '--access=public',
       '--tag=latest',
     ];

@@ -7,17 +7,13 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "executor": "@angular-devkit/build-angular:browser-esbuild",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/validation-messages-example-app",
         "index": "apps/validation-messages-example-app/src/index.html",
         "main": "apps/validation-messages-example-app/src/main.ts",
-        "polyfills": [
-          "zone.js"
-        ],
+        "polyfills": ["zone.js"],
         "tsConfig": "apps/validation-messages-example-app/tsconfig.app.json",
         "assets": [
           "apps/validation-messages-example-app/src/favicon.ico",
@@ -76,9 +72,7 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
           "apps/validation-messages-example-app/**/*.ts",
@@ -88,9 +82,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectRoot}"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "apps/validation-messages-example-app/jest.config.ts",
         "passWithNoTests": true

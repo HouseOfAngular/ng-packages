@@ -8,11 +8,12 @@
         <!-- global messages are extended/overridden by a local config -->
         <ng-validation-messages
           [errorsMessages]="{
-            emailDomain: 'Email domain error: \'{{parsedDomain}}\' is not a valid domain',
+            emailDomain:
+              'Email domain error: \'{{parsedDomain}}\' is not a valid domain',
             email: 'Invalid email (local config message)'
-            }"
+          }"
           [multiple]="multiple"
-        ></ng-validation-messages>
+        />
       </mat-error>
     </mat-form-field>
 
@@ -26,7 +27,7 @@
           [control]="form.controls.name"
           [multiple]="multiple"
           [apiErrorMessages]="apiErrors"
-        ></ng-validation-messages>
+        />
       </mat-error>
     </mat-form-field>
 
@@ -35,15 +36,17 @@
       <input matInput type="number" formControlName="number" />
       <mat-error>
         <!-- component uses control passed in controlName -->
-        <ng-validation-messages
-          controlName="number"
-          [multiple]="multiple"
-        ></ng-validation-messages>
+        <ng-validation-messages controlName="number" [multiple]="multiple" />
       </mat-error>
     </mat-form-field>
   </div>
 
-  <button mat-raised-button color="primary" (click)="multiple = !multiple" class="form__button">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="multiple = !multiple"
+    class="form__button"
+  >
     Toggle multiple errors
   </button>
 

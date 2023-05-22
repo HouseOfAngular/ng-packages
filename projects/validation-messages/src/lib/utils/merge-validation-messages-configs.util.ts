@@ -1,8 +1,8 @@
 import {
-  angularValidatorsWithValueMap,
   ValidationMessage,
   ValidationMessagesConfig,
-} from 'validation-messages';
+} from '../resources/interfaces';
+import { angularValidatorsWithValueMap } from '../resources/const';
 
 const getValidatorValue = (key: string): string => {
   return (angularValidatorsWithValueMap as any)[key] || key; // types

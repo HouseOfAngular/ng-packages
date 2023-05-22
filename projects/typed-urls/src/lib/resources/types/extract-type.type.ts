@@ -1,5 +1,6 @@
-export type ExtractType<T> = string extends T
-  ? never
+export type ExtractType<T> = T extends `any`
+  ? /* eslint-disable-next-line */
+    any
   : T extends `string`
   ? string
   : T extends `number`

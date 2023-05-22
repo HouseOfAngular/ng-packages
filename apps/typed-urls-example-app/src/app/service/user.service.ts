@@ -25,4 +25,18 @@ export class UserService {
       })
     );
   }
+
+  getUserNested(id: string): Observable<User> {
+    const url = urlFactory(`a/:id/:secondId`);
+    return this.http.get(url.url({ id: id })).pipe(
+      map((response: any) => {
+        const { firstName, age, lastName } = response;
+        return {
+          firstName,
+          age,
+          lastName,
+        };
+      })
+    );
+  }
 }

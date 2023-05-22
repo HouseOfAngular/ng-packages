@@ -11,7 +11,6 @@ export function interpolateQueryParams(url: string, params = {}) {
   }
 
   const [urlStart, queryParamsStr] = url.split('?');
-  // todo should it set undefined values in the url ?
   const queryParams = queryParamsStr
     .split('&')
     .map((param) => param.split('='))

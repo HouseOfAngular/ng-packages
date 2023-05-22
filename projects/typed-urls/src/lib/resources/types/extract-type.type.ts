@@ -14,4 +14,4 @@ export type ExtractType<T> = T extends `any`
     Array<any>
   : T extends `object`
   ? object
-  : never;
+  : unknown;

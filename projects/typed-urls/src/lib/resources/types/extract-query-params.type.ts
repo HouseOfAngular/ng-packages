@@ -8,4 +8,4 @@ export type ExtractQueryParams<T> =
     ? { [k in ParamKey]: ExtractType<ParamType> } & ExtractQueryParams<Rest>
     : T extends `${infer ParamKey}=${infer ParamType}`
     ? { [k in ParamKey]: ExtractType<ParamType> }
-    : never;
+    : Record<string, never>;

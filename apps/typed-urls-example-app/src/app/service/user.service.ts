@@ -53,8 +53,6 @@ export class UserService {
     const url = urlFactory(
       `${this.baseUrl}/:id/items?order=boolean&itemTypes=array<number>&limit=number&searchQuery=string`
     );
-    return this.http.get(
-      url.url({ id }, { limit, order, searchQuery, itemTypes })
-    );
+    return this.http.get(url.url({ id }, { limit, searchQuery, itemTypes }));
   }
 }

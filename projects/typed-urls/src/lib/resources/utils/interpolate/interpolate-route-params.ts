@@ -3,7 +3,7 @@
  * @param params
  * @returns Interpolation of the path with the parameters.
  */
-export function interpolate(str: string, params = {}): string {
+export function interpolateRouteParams(str: string, params = {}): string {
   const paramsCopy: { [key: string]: string } = { ...params };
   const result: string[] = [];
   let segmentMatch;

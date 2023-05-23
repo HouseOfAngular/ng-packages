@@ -8,13 +8,21 @@ import { map, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class UserService {
-  baseUrl = 'http://dummyjson.com/users';
+  private baseUrl = 'http://dummyjson.com/users';
+  private endpoints = {
+    user: urlFactory(`${this.baseUrl}/:id`),
+    items: urlFactory(
+      `items?order=boolean&itemTypes=array<number>&limit=number&searchQuery=string`
+    ),
+    userItems: urlFactory(
+      `${this.baseUrl}/:id/items?order=boolean&itemTypes=array<number>&limit=number&searchQuery=string`
+    ),
+  };
 
   constructor(private http: HttpClient) {}
 
   getUserById(id: string): Observable<User> {
-    const url = urlFactory(`${this.baseUrl}/:id`);
-    return this.http.get(url.url({ id: id })).pipe(
+    return this.http.get(this.endpoints.user.url({ id: id })).pipe(
       map((response: any) => {
         const { firstName, age, lastName } = response;
         return {
@@ -32,10 +40,9 @@ export class UserService {
     searchQuery: string,
     itemTypes: Array<number>
   ): Observable<any> {
-    const url = urlFactory(
-      `items?order=boolean&itemTypes=array<number>&limit=number&searchQuery=string`
+    return this.http.get(
+      this.endpoints.items.url({ limit, order, searchQuery, itemTypes })
     );
-    return this.http.get(url.url({ limit, order, searchQuery, itemTypes }));
   }
 
   getUserItem(id: string, userItemId: string): Observable<any> {
@@ -48,11 +55,10 @@ export class UserService {
     limit: number,
     order: boolean,
     searchQuery: string,
-    itemTypes: Array<number>
+    itemTypes: number[]
   ): Observable<any> {
-    const url = urlFactory(
-      `${this.baseUrl}/:id/items?order=boolean&itemTypes=array<number>&limit=number&searchQuery=string`
+    return this.http.get(
+      this.endpoints.userItems.url({ id }, { limit, searchQuery, itemTypes })
     );
-    return this.http.get(url.url({ id }, { limit, searchQuery, itemTypes }));
   }
 }

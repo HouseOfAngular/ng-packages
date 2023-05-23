@@ -38,7 +38,7 @@ export class UserService {
     limit: number,
     order: boolean,
     searchQuery: string,
-    itemTypes: Array<number>
+    itemTypes: number[]
   ): Observable<any> {
     return this.http.get(
       this.endpoints.items.url({ limit, order, searchQuery, itemTypes })

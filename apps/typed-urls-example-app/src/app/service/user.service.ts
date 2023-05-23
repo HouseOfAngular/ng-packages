@@ -13,7 +13,6 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   getUserById(id: string): Observable<User> {
-    // Url consist of 1 route parameters
     const url = urlFactory(`${this.baseUrl}/:id`);
     return this.http.get(url.url({ id: id })).pipe(
       map((response: any) => {
@@ -33,15 +32,6 @@ export class UserService {
     searchQuery: string,
     itemTypes: Array<number>
   ): Observable<any> {
-    /*
-    Url consist of 4 query parameters
-    Available types for query params:
-    - string
-    - number
-    - boolean
-    - array<type> e.g. array<string>
-    - object
-   */
     const url = urlFactory(
       `items?order=boolean&itemTypes=array<number>&limit=number&searchQuery=string`
     );
@@ -49,7 +39,6 @@ export class UserService {
   }
 
   getUserItem(id: string, userItemId: string): Observable<any> {
-    // Url consist of 2 route parameters
     const url = urlFactory(`${this.baseUrl}/:id/:userItemId`);
     return this.http.get(url.url({ id, userItemId }));
   }
@@ -61,7 +50,6 @@ export class UserService {
     searchQuery: string,
     itemTypes: Array<number>
   ): Observable<any> {
-    // Url that consist of 1 route parameter and 4 query parameters
     const url = urlFactory(
       `${this.baseUrl}/:id/items?order=boolean&itemTypes=array<number>&limit=number&searchQuery=string`
     );

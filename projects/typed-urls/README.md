@@ -11,6 +11,7 @@ A utility package for creating typed url addresses.
 - Supports route urls
 - Supports query parameters
 - Allows to specify the type of the query parameters
+- Allows marking query parameters as required/optional
 
 ## Usage
 
@@ -72,6 +73,18 @@ const url = urlFactory('http://api-domain/products?limit=number&sorting=string')
 // Logs "http://api-domain/products?limit=5&sorting=asc"
 console.log(url.url({ limit: 5, sorting: 'asc' }));
 ```
+
+All query parameters are optional by default. To mark param as required add an exclamation mark after parameter type.
+
+Example:
+
+```ts
+const url = urlFactory('http://api-domain/products?limit=number&sorting=string!')
+```
+
+In the example above:
+- `limit` parameter is optional
+- `sorting` parameter is required
 
 ### Combination of Parameters
 

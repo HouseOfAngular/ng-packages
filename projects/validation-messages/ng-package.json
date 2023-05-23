@@ -3,5 +3,9 @@
   "dest": "../../dist/projects/validation-messages",
   "lib": {
     "entryFile": "src/index.ts"
-  }
+  },
+  "assets": [
+    "./README.md",
+    "./LICENSE"
+  ]
 }

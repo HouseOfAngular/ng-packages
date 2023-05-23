@@ -3,5 +3,9 @@
   "dest": "../../dist/projects/linking-tool",
   "lib": {
     "entryFile": "src/index.ts"
-  }
+  },
+  "assets": [
+    "./README.md",
+    "./LICENSE"
+  ]
 }

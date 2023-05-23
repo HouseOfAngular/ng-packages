@@ -3,5 +3,9 @@
   "dest": "../../dist/projects/typed-urls",
   "lib": {
     "entryFile": "src/index.ts"
-  }
+  },
+  "assets": [
+    "./README.md",
+    "./LICENSE"
+  ]
 }

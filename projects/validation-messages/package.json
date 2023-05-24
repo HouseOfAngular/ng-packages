@@ -8,5 +8,20 @@
   "dependencies": {
     "tslib": "^2.3.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "description": "Package for handling validation messages in Angular",
+  "author": {
+    "email": "contact@valueadd.pl",
+    "name": "ValueAdd sp. z o.o.",
+    "url": "https://valueadd.pl/"
+  },
+  "homepage": "https://github.com/HouseOfAngular/ng-packages/tree/master/projects/validation-messages",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HouseOfAngular/ng-packages.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HouseOfAngular/ng-packages/issues"
+  }
 }

@@ -14,12 +14,9 @@ In the module where you want to use the ng-validation-messages component, import
 
 ```ts
 @NgModule({
-    imports: [
-        CommonModule,
-        ValidationMessagesModule
-    ]
+  imports: [CommonModule, ValidationMessagesModule],
 })
-export class AppModule { }
+export class AppModule {}
 ```
 
 ### 2. Configuration
@@ -32,19 +29,18 @@ Inject the ValidationMessagesService into the constructor of the root module of 
 
 ```ts
 @NgModule({
-  imports: [
-    CommonModule,
-    ValidationMessagesModule
-  ]
+  imports: [CommonModule, ValidationMessagesModule],
 })
 export class AppModule {
   constructor(private validationMessagesService: ValidationMessagesService) {}
 }
 ```
+
 or
+
 ```ts
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ValidationMessagesConfigService {
   constructor(private validationMessagesService: ValidationMessagesService) {}
@@ -54,12 +50,14 @@ export class ValidationMessagesConfigService {
 **Step 2.2: Define Validation Messages**
 
 Define the global messages for validators by creating a configuration object of type ValidationMessagesConfig. There are two ways to provide error message definitions:
+
 - Using key-value pairs, where the key is the validator key in the `FormControl`'s "errors" object and the value is the error message to be displayed. For example, see the **required** and **email** messages in the example configuration below.
 - Providing an object of type ValidationMessage under a key. For example, see the **lettersPattern** message in the example configuration below.
 
 Here is an example configuration:
+
 ```ts
-  const validationMessagesConfig: ValidationMessagesConfig = {
+const validationMessagesConfig: ValidationMessagesConfig = {
   required: 'Field is required',
   email: 'Invalid email',
   min: 'Value is too small: {{actual}}/{{min}}',
@@ -70,7 +68,7 @@ Here is an example configuration:
   lettersPattern: {
     message: 'Must contains only letters',
     pattern: '$[a-zA-Z]*$',
-  }
+  },
 };
 ```
 
@@ -109,8 +107,7 @@ Now, in your component's template, you can use the `ValidationMessagesComponent`
 Alternatively, you can manually pass the control to the ValidationMessagesComponent by specifying either the `controlName` or `control` input:
 
 ```html
-<ng-validation-messages [control]="name"></ng-validation-messages>
-<ng-validation-messages controlName="formControlName"></ng-validation-messages>
+<ng-validation-messages [control]="name"></ng-validation-messages> <ng-validation-messages controlName="formControlName"></ng-validation-messages>
 ```
 
 ### Local validator messages
@@ -151,7 +148,7 @@ You can specify parameters in the error messages using `{{parameterName}}`. Thes
 
 `apiErrorMessages: Array<string | ApiErrorMessage>`: If an error is returned from an API request, this input allows to display it instantly
 
-`control: FormControl`: Specifies the form control for which errors should be shown.
+`control: AbstractControl`: Specifies the control for which errors should be shown.
 
 `controlName: string`: Specifies the name of the form control for which errors should be shown.
 
@@ -166,6 +163,7 @@ export interface ValidationMessage {
   templateMatcher?: RegExp;
 }
 ```
+
 `validatorValue`: specifies the name of the property under the validator name in Form Control errors object from where the value for interpolation will be taken.
 
 `validatorValueParser`: specifies a function to parse the validator value

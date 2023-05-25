@@ -1,7 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { ApiErrorMessage } from '../../../../projects/validation-messages/src';
+import {
+  ApiErrorMessage,
+  ValidationMessagesService,
+} from '../../../../projects/validation-messages/src';
+import { BehaviorSubject, of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,8 +14,18 @@ import { ApiErrorMessage } from '../../../../projects/validation-messages/src';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
+  apiErrors: Array<ApiErrorMessage | string> = [
+    { property: 'dodo', message: 'DoDuCheck' },
+    { property: 'dodo', message: 'DoDuCheck' },
+    'erroooor',
+  ];
+  private _serverErrors = new BehaviorSubject<any>(this.apiErrors);
+  serverErrors$ = this._serverErrors.asObservable();
   form = this.fb.group({
-    email: ['', [Validators.email, this.emailDomainValidator]],
+    email: [
+      '',
+      [Validators.email, this.emailDomainValidator, Validators.required],
+    ],
     name: [
       '',
       [
@@ -19,18 +33,25 @@ export class AppComponent {
         Validators.maxLength(255),
         Validators.required,
         Validators.pattern('^[a-zA-Z]*$'),
+        this._validationService.serverErrorsValidator(this.apiErrors),
       ],
     ],
-    number: ['', [Validators.min(10), Validators.max(99)]],
+    number: [
+      '',
+      [
+        Validators.min(10),
+        Validators.max(99),
+        this._validationService.serverErrorsValidator(this.serverErrors$),
+      ],
+    ],
   });
-  apiErrors: Array<ApiErrorMessage | string> = [
-    { property: 'dodo', message: 'DoDuCheck' },
-    { property: 'dodo', message: 'DoDuCheck' },
-    'erroooor',
-  ];
+
   multiple = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private _validationService: ValidationMessagesService
+  ) {}
 
   emailDomainValidator(control: FormControl) {
     const email = control.value;
@@ -45,5 +66,12 @@ export class AppComponent {
       }
     }
     return null;
+  }
+  addServerError() {
+    this._serverErrors.next([...this.apiErrors, 'Next error']);
+  }
+
+  clearServerErrors() {
+    this._serverErrors.next(undefined);
   }
 }

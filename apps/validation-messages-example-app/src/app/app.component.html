@@ -26,11 +26,9 @@
         <ng-validation-messages
           [control]="form.controls.name"
           [multiple]="multiple"
-          [apiErrorMessages]="apiErrors"
         />
       </mat-error>
     </mat-form-field>
-
     <mat-form-field>
       <mat-label>Number</mat-label>
       <input matInput type="number" formControlName="number" />
@@ -41,14 +39,32 @@
     </mat-form-field>
   </div>
 
-  <button
-    mat-raised-button
-    color="primary"
-    (click)="multiple = !multiple"
-    class="form__button"
-  >
-    Toggle multiple errors
-  </button>
+  <div class="form__options">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="multiple = !multiple"
+      class="form__options-button"
+    >
+      Toggle multiple errors ({{ multiple }})
+    </button>
 
-  <p>Show multiple errors: {{ multiple }}</p>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="addServerError()"
+      class="form__options-button"
+    >
+      Add server error
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="clearServerErrors()"
+      class="form__options-button"
+    >
+      Clear server errors
+    </button>
+  </div>
 </form>

@@ -1,0 +1,78 @@
+name: Publish Packages
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: choice
+        description: Choose version
+        options:
+          - minor
+          - major
+          - patch
+      commit-lint:
+        type: boolean
+        default: true
+        description: Publish commit-lint
+      validation-messages:
+        type: boolean
+        default: true
+        description: Publish validation-messages
+      linking-tool:
+        type: boolean
+        default: false
+        description: Publish linking-tool
+      typed-urls:
+        type: boolean
+        default: false
+        description: Publish typed-urls
+jobs:
+  publish_packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@house-of-angular'
+        env:
+          NODE_AUTH_TOKEN: test
+      - name: Install Dependencies
+        run: npm ci
+      - name: Set up inputs as env variables
+        run: |
+          echo "COMMIT_LINT=${{ github.event.inputs.commit-lint }}" >> $GITHUB_ENV
+          echo "VALIDATION_MESSAGES=${{ github.event.inputs.validation-messages }}" >> $GITHUB_ENV
+          echo "TYPED_URLS=${{ github.event.inputs.typed-urls }}" >> $GITHUB_ENV
+          echo "LINKING_TOOL=${{ github.event.inputs.linking-tool }}" >> $GITHUB_ENV
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+      - name: Prepare chosen packages
+        run: |
+          packages=("commit-lint" "typed-urls" "validation-messages" "linking-tool")
+          inputs=($COMMIT_LINT $TYPED_URLS $VALIDATION_MESSAGES $LINKING_TOOL)
+          counter=0
+          for package in ${packages[@]}; do
+            if [[ "${inputs[$counter]}" == "false" ]]; then
+              unset packages[$counter]
+            fi
+            counter=$((counter+1))
+          done
+          echo "CHOSEN_PACKAGES=${packages[@]}" >> $GITHUB_ENV
+      - name: Build chosen packages
+        run: |
+          for package in ${CHOSEN_PACKAGES[@]}; do
+            npm run build:package $package
+          done
+      - name: Bump version and publish
+        run: |
+          for package in ${CHOSEN_PACKAGES[@]}; do
+              cd ./dist/projects/$package
+              echo "Update $package version..."
+              npm version $VERSION -m "Upgrade $package to %s"
+              echo "Publishing $package..."
+              npm publish --access=public --tag=latest
+              cd ../../..
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

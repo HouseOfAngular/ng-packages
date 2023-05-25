@@ -3,11 +3,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  DoCheck,
+  computed,
+  DestroyRef,
   Host,
+  Injector,
   Input,
-  OnDestroy,
   OnInit,
+  Optional,
+  Signal,
+  signal,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -15,10 +19,10 @@ import {
   ControlContainer,
   FormControl,
 } from '@angular/forms';
-import { Subject, Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+
 import {
   ApiErrorMessage,
+  ApiErrorMessages,
   ValidationMessagesConfig,
 } from '../../resources/interfaces';
 import { ValidationMessagesService } from '../../services/validation-messages.service';
@@ -26,76 +30,45 @@ import {
   MatFormField,
   MatFormFieldControl,
 } from '@angular/material/form-field';
-
-type ApiErrorMessages =
-  | Array<ApiErrorMessage | string>
-  | ApiErrorMessage
-  | string
-  | null;
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { fromEvent, map } from 'rxjs';
 
 @Component({
   selector: 'ng-validation-messages',
   templateUrl: './validation-messages.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ValidationMessagesComponent
-  implements OnInit, OnDestroy, DoCheck, AfterContentInit
-{
-  materialErrorMatcher = false;
-  shownErrors: string[] = [];
-
+export class ValidationMessagesComponent implements OnInit, AfterContentInit {
   @Input() errorsMessages: ValidationMessagesConfig = {};
-  @Input() control!: FormControl;
-  @Input() controlName!: string;
-
-  showServerErrors = false;
-  parsedApiErrorMessages: string[] = [];
-  valueChanges: Subscription | null = null;
-  private ngUnsubscribe: Subject<void> = new Subject<void>();
-
-  constructor(
-    @Host() protected host: MatFormField,
-    private cd: ChangeDetectorRef,
-    private validationMessagesService: ValidationMessagesService,
-    private controlContainer: ControlContainer
-  ) {
-    this.unsubscribeAndClearValueChanges =
-      this.unsubscribeAndClearValueChanges.bind(this);
-    this.materialErrorMatcher = validationMessagesService.materialErrorMatcher;
-  }
-
-  private _multiple = false;
-
-  get multiple(): boolean {
-    return this._multiple;
-  }
-
+  @Input() control?: FormControl;
+  @Input() controlName?: string;
   @Input()
   set multiple(multiple: boolean) {
-    this._multiple = multiple;
-    this.updateErrorMessages();
+    this._multiple.set(multiple);
   }
 
-  private _apiErrorMessages: ApiErrorMessages = null;
-
-  get apiErrorMessages(): ApiErrorMessages {
-    return this._apiErrorMessages;
-  }
-
-  @Input()
-  set apiErrorMessages(apiErrorMessages: ApiErrorMessages) {
-    this.unsubscribeAndClearValueChanges();
-    this._apiErrorMessages = apiErrorMessages;
-    this.parseApiErrorMessages(this._apiErrorMessages);
-    this.showServerErrors = true;
-
-    if (this.control && apiErrorMessages) {
-      this.control.setErrors({
-        server: apiErrorMessages,
-      });
-
-      this.observeInputValueChanges();
+  shownErrors = computed(() => {
+    this._serverErrors;
+    const control = this._controlSig();
+    if (control && control.invalid) {
+      return this._defineErrorsToBeShown();
     }
+    return [];
+  });
+
+  private _controlSig!: Signal<undefined | FormControl>;
+  private _multiple = signal(false);
+  constructor(
+    @Host() @Optional() protected host: MatFormField,
+    private _validationMessagesService: ValidationMessagesService,
+    private _controlContainer: ControlContainer,
+    private _destroyRef: DestroyRef,
+    private _injector: Injector,
+    private _cdr: ChangeDetectorRef
+  ) {}
+
+  get _serverErrors() {
+    return this._validationMessagesService.serverErrors();
   }
 
   get matInputControl(): AbstractControl | AbstractControlDirective | null {
@@ -109,112 +82,107 @@ export class ValidationMessagesComponent
     return this.host._control;
   }
 
-  observeInputValueChanges(): void {
-    if (!this.valueChanges) {
-      this.valueChanges = this.control.valueChanges
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(this.unsubscribeAndClearValueChanges);
-
-      setTimeout(() => {
-        this.cd.markForCheck();
-      });
-    }
+  get isControlDirtyOrTouched() {
+    return this.control && (this.control.dirty || this.control.touched);
   }
 
-  parseApiErrorMessages(apiErrorMessages: ApiErrorMessages): void {
-    if (!apiErrorMessages) {
-      this.parsedApiErrorMessages = [];
+  ngOnInit(): void {
+    this._readFormControlByControlName();
+  }
+
+  ngAfterContentInit(): void {
+    this._readFormControlFromHost();
+    this._listenToFormChanges();
+    this._listenToControlOnBlur();
+  }
+
+  private _listenToControlOnBlur() {
+    if (!this.host || !this.matInputRef) {
       return;
+    }
+
+    const onBlur$ = fromEvent(
+      (this.matInputRef as any)?._elementRef.nativeElement,
+      'blur'
+    );
+
+    onBlur$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe(() => {
+      this._cdr.markForCheck();
+    });
+  }
+
+  private _parseApiErrorMessages(apiErrorMessages: ApiErrorMessages): string[] {
+    if (!apiErrorMessages) {
+      return [];
     }
 
     const messages =
       apiErrorMessages instanceof Array
         ? [...apiErrorMessages]
         : [apiErrorMessages];
-    this.parsedApiErrorMessages = messages.map(
-      (message: ApiErrorMessage | string) =>
-        message instanceof Object
-          ? this.validationMessagesService.parseApiErrorMessage(
-              message.message,
-              message.property
-            )
-          : message
+
+    return messages.map((message: ApiErrorMessage | string) =>
+      message instanceof Object
+        ? this._validationMessagesService.parseApiErrorMessage(
+            message.message,
+            message.property
+          )
+        : message
     );
   }
 
-  ngOnInit(): void {
-    this.readFormControlByControlName();
-  }
-
-  ngAfterContentInit(): void {
-    this.readFormControlFromHost();
-
-    this.control.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => this.cd.markForCheck());
-  }
-
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
-
-  ngDoCheck(): void {
-    if (
-      this.control &&
-      ((this.control.invalid && this.control.touched) ||
-        (!this.control.invalid && this.shownErrors.length > 0))
-    ) {
-      this.updateErrorMessages();
-      this.cd.markForCheck();
-    }
-  }
-
-  private updateErrorMessages(): void {
-    this.shownErrors = [];
-
-    if (!this.control || !this.control.errors) {
+  private _defineErrorsToBeShown() {
+    if (!this.control) {
       return;
     }
 
-    const controlErrors = this.control.errors;
-    for (const propertyName in controlErrors) {
-      if (!this.multiple && this.shownErrors.length === 1) {
-        break;
-      }
+    const errorMessages: string[] = [];
 
-      if (controlErrors[propertyName] && propertyName !== 'server') {
-        this.shownErrors.push(
-          this.validationMessagesService.getValidatorErrorMessage(
+    for (const [propertyName, value] of Object.entries(this.control.errors!)) {
+      if (!value) {
+        continue;
+      }
+      if (propertyName !== 'server') {
+        const errorMessage =
+          this._validationMessagesService.getValidatorErrorMessage(
             propertyName,
-            controlErrors[propertyName],
+            value,
             this.errorsMessages
-          )
-        );
+          );
+        errorMessages.push(errorMessage);
+      } else {
+        errorMessages.push(...this._parseApiErrorMessages(value));
       }
     }
+
+    if (!this._multiple() && errorMessages.length) {
+      return [errorMessages[0]];
+    }
+    return errorMessages || [];
   }
 
-  private unsubscribeAndClearValueChanges(): void {
-    if (this.control) {
-      this.control.setErrors({});
-      this.control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+  private _listenToFormChanges(): void {
+    if (!this.control) {
+      return;
     }
 
-    if (this.valueChanges && !this.valueChanges.closed) {
-      this.valueChanges.unsubscribe();
-    }
+    const valueChanges$ = this.control.valueChanges.pipe(
+      map(() => this.control),
+      takeUntilDestroyed(this._destroyRef)
+    );
 
-    this.showServerErrors = false;
-    this.valueChanges = null;
+    this._controlSig = toSignal(valueChanges$, {
+      injector: this._injector,
+      initialValue: this.control,
+    });
   }
 
-  private readFormControlByControlName(): void {
+  private _readFormControlByControlName(): void {
     if (this.controlName === undefined) {
       return;
     }
 
-    const control = this.controlContainer.control?.get(this.controlName);
+    const control = this._controlContainer.control?.get(this.controlName);
 
     if (!(control instanceof FormControl)) {
       return;
@@ -223,7 +191,7 @@ export class ValidationMessagesComponent
     this.control = control as FormControl;
   }
 
-  private readFormControlFromHost(): void {
+  private _readFormControlFromHost(): void {
     if (this.control !== undefined) {
       return;
     }

@@ -1,24 +1,14 @@
-name: Publish Nx Monorepo Packages
-
+name: Publish Packages
 on:
   workflow_dispatch:
     inputs:
-      version_type:
-        type: choice
-        description: 'Version scope'
-        required: true
-        options:
-          - minor
-          - major
-          - patch
-        default: 'patch'
       commit-lint:
         type: boolean
-        default: false
+        default: true
         description: Publish commit-lint
       validation-messages:
         type: boolean
-        default: false
+        default: true
         description: Publish validation-messages
       linking-tool:
         type: boolean
@@ -28,51 +18,48 @@ on:
         type: boolean
         default: false
         description: Publish typed-urls
-
+  push: null
 jobs:
   publish_packages:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '19'
-
-      - name: Authenticate with NPM registry
-        run: echo "//registry.npmjs.org/:_authToken=\${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-
-      - name: Update versions
+          node-version: '19.x'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@house-of-angular'
+        env:
+          NODE_AUTH_TOKEN: test
+      - name: Install Dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm run test
+      - name: Set up input variables
         run: |
-          packages=[commit-lint,typed-urls,validation-messages,linking-tool]
-          for package in $packages
-          do
-            if [ ${{ github.event.inputs.$package }} -eq true]
-            then
-              echo "Updating ${{ github.event.inputs.version_type }} version for $package..."
-              cd ./dist/projects/$package
-              npm version ${{ github.event.inputs.version_type }} --no-git-tag-version
-              cd ..
-              cd ..
-              cd ..
-            fi
-          done
-
+          echo "COMMIT_LINT=true" >> $GITHUB_ENV
+          echo "VALIDATION_MESSAGES=true" >> $GITHUB_ENV
+          echo "TYPED_URLS=true" >> $GITHUB_ENV
+          echo "LINKING_TOOL=false" >> $GITHUB_ENV
       - name: Publish packages
         run: |
-          packages=[commit-lint,typed-urls,validation-messages,linking-tool]
-          for package in $packages
+          packages=("commit-lint" "typed-urls" "validation-messages" "linking-tool")
+          inputs=($COMMIT_LINT $TYPED_URLS $VALIDATION_MESSAGES $LINKING_TOOL)
+          counter=0
+          for package in "${packages[@]}"
           do
-            if [ ${{ github.event.inputs.$package }} -eq true]
+            ls
+            if [ "${inputs[$counter]}" = "true" ]
             then
               echo "Publishing $package..."
               cd ./dist/projects/$package
-              npm publish --access=public --tag=latest
               cd ..
               cd ..
               cd ..
+              ls
             fi
+            ((counter++))
           done

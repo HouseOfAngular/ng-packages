@@ -1,0 +1,78 @@
+name: Publish Nx Monorepo Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        type: choice
+        description: 'Version scope'
+        required: true
+        options:
+          - minor
+          - major
+          - patch
+        default: 'patch'
+      commit-lint:
+        type: boolean
+        default: false
+        description: Publish commit-lint
+      validation-messages:
+        type: boolean
+        default: false
+        description: Publish validation-messages
+      linking-tool:
+        type: boolean
+        default: false
+        description: Publish linking-tool
+      typed-urls:
+        type: boolean
+        default: false
+        description: Publish typed-urls
+
+jobs:
+  publish_packages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '19'
+
+      - name: Authenticate with NPM registry
+        run: echo "//registry.npmjs.org/:_authToken=\${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Update versions
+        run: |
+          packages=[commit-lint,typed-urls,validation-messages,linking-tool]
+          for package in $packages
+          do
+            if [ ${{ github.event.inputs.$package }} -eq true]
+            then
+              echo "Updating ${{ github.event.inputs.version_type }} version for $package..."
+              cd ./dist/projects/$package
+              npm version ${{ github.event.inputs.version_type }} --no-git-tag-version
+              cd ..
+              cd ..
+              cd ..
+            fi
+          done
+
+      - name: Publish packages
+        run: |
+          packages=[commit-lint,typed-urls,validation-messages,linking-tool]
+          for package in $packages
+          do
+            if [ ${{ github.event.inputs.$package }} -eq true]
+            then
+              echo "Publishing $package..."
+              cd ./dist/projects/$package
+              npm publish --access=public --tag=latest
+              cd ..
+              cd ..
+              cd ..
+            fi
+          done

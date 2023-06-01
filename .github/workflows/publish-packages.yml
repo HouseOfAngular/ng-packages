@@ -49,17 +49,11 @@ jobs:
           packages=("commit-lint" "typed-urls" "validation-messages" "linking-tool")
           inputs=($COMMIT_LINT $TYPED_URLS $VALIDATION_MESSAGES $LINKING_TOOL)
           counter=0
-          for package in "${packages[@]}"
-          do
-            ls
-            if [ "${inputs[$counter]}" = "true" ]
-            then
+          for package in "${packages[@]}"; do
+            if [[ "${inputs[$counter]}" = "true" ]]; then
               echo "Publishing $package..."
               cd ./dist/projects/$package
-              cd ..
-              cd ..
-              cd ..
-              ls
+              cd ../../..
             fi
             ((counter++))
           done

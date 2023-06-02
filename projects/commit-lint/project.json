@@ -1,5 +1,5 @@
 {
-  "name": "projects-commit-lint",
+  "name": "commit-lint",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "projects/commit-lint/src",
   "prefix": "app",

@@ -31,7 +31,7 @@ export async function publishLatestToNpm() {
     console.log(`Publishing @house-of-angular/${pkg}`);
 
     const cmd = [
-      'npm publish',
+      'pnpm publish',
       `./dist/projects/${pkg}`,
       '--access=public',
       '--tag=latest',

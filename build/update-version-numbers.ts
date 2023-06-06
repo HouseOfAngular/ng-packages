@@ -46,7 +46,7 @@ function createPackageJsonBuilder(version: string) {
   return async () => {
     glob
       .sync('**/package.json', { ignore: '**/node_modules/**' })
-      .map((file) => {
+      .map((file: any) => {
         const content = readFileSync(file, 'utf-8');
         const pkg = JSON.parse(content);
         let saveFile = false;

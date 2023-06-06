@@ -5,6 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "nx serve",
+    "build:package": "nx build",
     "build": "nx run-many --targets=build --all",
     "watch": "nx build --watch --configuration development",
     "test": "nx run-many --targets=test --all",

@@ -1,5 +1,5 @@
 {
-  "name": "projects-typed-urls",
+  "name": "typed-urls",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "projects/typed-urls/src",
   "prefix": "app",

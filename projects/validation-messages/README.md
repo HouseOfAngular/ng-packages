@@ -151,7 +151,7 @@ You can specify parameters in the error messages using `{{parameterName}}`. Thes
 
 `apiErrorMessages: Array<string | ApiErrorMessage>`: If an error is returned from an API request, this input allows to display it instantly
 
-`control: FormControl`: Specifies the form control for which errors should be shown.
+`control: AbstractControl`: Specifies the control for which errors should be shown.
 
 `controlName: string`: Specifies the name of the form control for which errors should be shown.
 

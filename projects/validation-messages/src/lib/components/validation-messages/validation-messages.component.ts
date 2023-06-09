@@ -45,7 +45,7 @@ export class ValidationMessagesComponent
   shownErrors: string[] = [];
 
   @Input() errorsMessages: ValidationMessagesConfig = {};
-  @Input() control!: FormControl;
+  @Input() control!: AbstractControl;
   @Input() controlName!: string;
 
   showServerErrors = false;
@@ -220,7 +220,7 @@ export class ValidationMessagesComponent
       return;
     }
 
-    this.control = control as FormControl;
+    this.control = control;
   }
 
   private readFormControlFromHost(): void {

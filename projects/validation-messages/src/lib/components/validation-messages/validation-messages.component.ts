@@ -8,6 +8,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Optional,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -54,7 +55,7 @@ export class ValidationMessagesComponent
   private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   constructor(
-    @Host() protected host: MatFormField,
+    @Optional() @Host() protected host: MatFormField,
     private cd: ChangeDetectorRef,
     private validationMessagesService: ValidationMessagesService,
     private controlContainer: ControlContainer

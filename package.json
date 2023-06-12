@@ -1,6 +1,6 @@
 {
   "name": "@house-of-angular/ng-packages",
-  "version": "15.0.5",
+  "version": "15.0.6",
   "type": "module",
   "scripts": {
     "ng": "ng",

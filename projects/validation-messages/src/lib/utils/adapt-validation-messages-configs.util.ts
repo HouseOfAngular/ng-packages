@@ -8,15 +8,14 @@ const getValidatorValue = (key: string): string => {
   return (angularValidatorsWithValueMap as any)[key] || key; // types
 };
 
-export const mergeValidationMessagesConfigs = (
-  config: ValidationMessagesConfig,
-  toBeMerged: ValidationMessagesConfig
-) => {
-  config = { ...config };
-  toBeMerged = { ...toBeMerged };
+export const adaptValidationMessagesConfigs = (
+  toBeAdapted: ValidationMessagesConfig
+): Record<string, any> => {
+  const config: Record<string, any> = {};
+  toBeAdapted = { ...toBeAdapted };
 
-  for (const key in toBeMerged) {
-    const value = toBeMerged[key];
+  for (const key in toBeAdapted) {
+    const value = toBeAdapted[key];
 
     if (typeof value === 'string') {
       config[key] = {

@@ -1,17 +1,26 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
   ApiErrorMessage,
+  VALIDATION_MESSAGES_CONFIG,
   ValidationMessagesService,
 } from '../../../../projects/validation-messages/src';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    // {
+    //   provide: VALIDATION_MESSAGES_CONFIG,
+    //   useValue: {
+    //     minlength: 'Too short {{actualLength}}/{{requiredLength}}',
+    //   },
+    // },
+  ],
 })
 export class AppComponent {
   apiErrors: Array<ApiErrorMessage | string> = [

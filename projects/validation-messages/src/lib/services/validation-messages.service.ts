@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { DestroyRef, Injectable, signal } from '@angular/core';
 import {
+  ApiErrorMessages,
   Parser,
   ValidationMessage,
   ValidationMessagesConfig,
@@ -7,6 +8,9 @@ import {
 import { KeyValue } from '@angular/common';
 import { getInterpolableParams, getPropByPath } from '../utils';
 import { mergeValidationMessagesConfigs } from '../utils/merge-validation-messages-configs.util';
+import { distinctUntilChanged, Observable, isObservable } from 'rxjs';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -17,10 +21,36 @@ export class ValidationMessagesService {
     ValidationMessage | any
   > = {}; // types
   private templateMatcher = /{{(.*)}}+/g;
-  private _materialErrorMatcher = false;
 
-  get materialErrorMatcher(): boolean {
-    return this._materialErrorMatcher;
+  _serverErrors = signal<ApiErrorMessages>(null);
+  serverErrors = this._serverErrors.asReadonly();
+
+  constructor(private _destroyRef: DestroyRef) {}
+
+  serverErrorsValidator(apiErrors: ApiErrorMessages): ValidationErrors | null;
+  serverErrorsValidator(
+    apiErrors: Observable<ApiErrorMessages>
+  ): ValidationErrors | null;
+  serverErrorsValidator(
+    apiErrors: Observable<ApiErrorMessages> | ApiErrorMessages
+  ) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!isObservable(apiErrors)) {
+        this._setFormControlErrors(control, apiErrors);
+        return apiErrors ? { server: apiErrors } : null;
+      }
+
+      let errors: ApiErrorMessages = null;
+
+      apiErrors
+        .pipe(distinctUntilChanged(), takeUntilDestroyed(this._destroyRef))
+        .subscribe((apiErrors) => {
+          errors = apiErrors;
+          this._setFormControlErrors(control, errors);
+          this._serverErrors.set(errors);
+        });
+      return errors ? { server: errors } : null;
+    };
   }
 
   getValidatorErrorMessage(
@@ -77,10 +107,6 @@ export class ValidationMessagesService {
     this.parser = serverMessageParser;
   }
 
-  useMaterialErrorMatcher(): void {
-    this._materialErrorMatcher = true;
-  }
-
   parseApiErrorMessage(message: string, params: any): string {
     if (this.parser) {
       return this.parser.parse(message, params);
@@ -94,6 +120,21 @@ export class ValidationMessagesService {
       this.templateMatcher = templateMatcher;
     } else {
       console.error('Template matcher must be a regex.');
+    }
+  }
+
+  private _setFormControlErrors(
+    control: AbstractControl,
+    errors: ApiErrorMessages
+  ) {
+    if (errors) {
+      control.setErrors({ ...control.errors, server: errors });
+    } else {
+      const nonServerErrors = { ...control.errors };
+      delete nonServerErrors['server'];
+      control.setErrors(
+        Object.keys(nonServerErrors).length > 0 ? nonServerErrors : null
+      );
     }
   }
 

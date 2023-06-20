@@ -1,6 +1,5 @@
-<ng-container *ngIf="materialErrorMatcher || (control && (control.dirty || control.touched))">
-  <span *ngFor="let errorMessage of shownErrors">{{ errorMessage }}<br /></span>
-</ng-container>
-<ng-container *ngIf="showServerErrors && parsedApiErrorMessages.length">
-  <span *ngFor="let errorMessage of parsedApiErrorMessages">{{ errorMessage }}<br /></span>
+<ng-container *ngIf="shownErrors() && isControlDirtyOrTouched">
+  <span *ngFor="let errorMessage of shownErrors()" data-test="validation-error"
+    >{{ errorMessage }}<br />
+  </span>
 </ng-container>

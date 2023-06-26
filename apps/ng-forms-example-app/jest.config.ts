@@ -1,7 +1,7 @@
 /* eslint-disable */
 export default {
   displayName: 'ng-forms-example-app',
-  preset: '../../jest.preset.js',
+  preset: '../../jest.preset.cjs',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../coverage/apps/ng-forms-example-app',
   transform: {

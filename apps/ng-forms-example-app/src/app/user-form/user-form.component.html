@@ -1,0 +1,5 @@
+<form [formGroup]="userForm">
+  <app-control label="Name" [formControl]="nameControl"></app-control>
+  <app-control label="Surname" formControlName="surname"></app-control>
+  <app-address-form [formGroup]="addressGroup"></app-address-form>
+</form>

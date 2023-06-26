@@ -15,7 +15,8 @@ import {
 
 export interface UserDetailsForm {
   name: string;
-  surname: string;
+  surname?: string;
+  address: AddressForm;
 }
 
 @Component({
@@ -29,7 +30,7 @@ export class UserFormComponent
   extends FormGroupComponent<UserDetailsForm>
   implements OnInit
 {
-  userForm = this._fb.group({
+  userForm = this._fb.group<UserDetailsForm>({
     name: [''],
     address: this._fb.group({
       city: [''],

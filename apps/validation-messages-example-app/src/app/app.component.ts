@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
   ApiErrorMessage,
   ValidationMessagesService,
 } from '../../../../projects/validation-messages/src';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-root',

@@ -2,24 +2,20 @@ import { DestroyRef, Injectable, signal } from '@angular/core';
 import {
   ApiErrorMessages,
   Parser,
-  ValidationMessage,
   ValidationMessagesConfig,
 } from '../resources';
 import { KeyValue } from '@angular/common';
 import { getInterpolableParams, getPropByPath } from '../utils';
-import { mergeValidationMessagesConfigs } from '../utils/merge-validation-messages-configs.util';
-import { distinctUntilChanged, Observable, isObservable } from 'rxjs';
+import { distinctUntilChanged, isObservable, Observable } from 'rxjs';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { adaptValidationMessagesConfigs } from '../utils/adapt-validation-messages-configs.util';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ValidationMessagesService {
   private parser!: Parser;
-  private validationMessagesFinalConfig: ValidationMessagesConfig<
-    ValidationMessage | any
-  > = {}; // types
   private templateMatcher = /{{(.*)}}+/g;
 
   _serverErrors = signal<ApiErrorMessages>(null);
@@ -56,15 +52,11 @@ export class ValidationMessagesService {
   getValidatorErrorMessage(
     validatorName: string,
     validatorValue: any = {},
-    localValidationMessagesConfig: ValidationMessagesConfig = {}
+    errorMessages: ValidationMessagesConfig = {}
   ): string {
-    // types
-    const validationMessages = mergeValidationMessagesConfigs(
-      this.validationMessagesFinalConfig,
-      localValidationMessagesConfig
-    ) as { [p: string]: any };
-
+    const validationMessages = adaptValidationMessagesConfigs(errorMessages);
     const validatorMessage = validationMessages[validatorName];
+
     if (!validatorMessage) {
       return this.validatorNotSpecified(validatorName);
     }
@@ -93,14 +85,6 @@ export class ValidationMessagesService {
             : validatorValue[validatorMessage.validatorValue]
         )
       : message;
-  }
-
-  setValidationMessages(
-    validationMessagesConfig: ValidationMessagesConfig
-  ): void {
-    // Set validation errorMessages
-    const config = mergeValidationMessagesConfigs({}, validationMessagesConfig);
-    this.validationMessagesFinalConfig = { ...config };
   }
 
   setServerMessagesParser(serverMessageParser: Parser): void {
@@ -157,7 +141,7 @@ export class ValidationMessagesService {
   private validatorNotSpecified(validatorName: string): string {
     console.warn(
       `Validation message for ${validatorName} validator is not specified in this.`,
-      `Did you called 'this.setValidationMessages()'?`
+      `Did you specify it in providers?`
     );
 
     return '';

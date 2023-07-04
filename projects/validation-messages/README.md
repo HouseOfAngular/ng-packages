@@ -21,36 +21,7 @@ export class AppModule {}
 
 ### 2. Configuration
 
-To configure the validation messages, you need to perform the following steps:
-
-**Step 2.1: Inject ValidationMessagesService**
-
-Inject the ValidationMessagesService into the constructor of the root module of your application or create a service that is provided at the root level and inject the ValidationMessagesService into it.
-
-```ts
-@NgModule({
-  imports: [CommonModule, ValidationMessagesModule],
-})
-export class AppModule {
-  constructor(private validationMessagesService: ValidationMessagesService) {}
-}
-```
-
-or
-
-```ts
-@Injectable({
-  providedIn: 'root',
-})
-export class ValidationMessagesConfigService {
-  constructor(private validationMessagesService: ValidationMessagesService) {}
-}
-```
-
-**Step 2.2: Define Validation Messages**
-
 Define the global messages for validators by creating a configuration object of type ValidationMessagesConfig. There are two ways to provide error message definitions:
-
 - Using key-value pairs, where the key is the validator key in the `FormControl`'s "errors" object and the value is the error message to be displayed. For example, see the **required** and **email** messages in the example configuration below.
 - Providing an object of type ValidationMessage under a key. For example, see the **lettersPattern** message in the example configuration below.
 
@@ -72,22 +43,19 @@ const validationMessagesConfig: ValidationMessagesConfig = {
 };
 ```
 
-Once the configuration object is created, pass it as a parameter to the `setValidationMessages` method of the ValidationMessagesService.
+Once the configuration object is created, provide it as a value of VALIDATION_MESSAGES_CONFIG injection token in app module.
 
 ```ts
-const validationMessagesConfig: ValidationMessagesConfig = {
-  required: 'Field is required',
-  ...
-};
-
 @NgModule({
-  imports: [...]
+  imports: [CommonModule,ValidationMessagesModule,],
+  providers: [
+    {
+      provide: VALIDATION_MESSAGES_CONFIG,
+      useValue: validationMessagesConfig,
+    },
+  ],
 })
-export class AppModule {
-  constructor(private validationMessagesService: ValidationMessagesService) {
-    this.validationMessagesService.setValidationMessages(validationMessagesConfig);
-  }
-}
+export class AppModule {}
 ```
 
 # 3. Usage in templates
@@ -107,7 +75,8 @@ Now, in your component's template, you can use the `ValidationMessagesComponent`
 Alternatively, you can manually pass the control to the ValidationMessagesComponent by specifying either the `controlName` or `control` input:
 
 ```html
-<ng-validation-messages [control]="name"></ng-validation-messages> <ng-validation-messages controlName="formControlName"></ng-validation-messages>
+<ng-validation-messages [control]="name"></ng-validation-messages>
+<ng-validation-messages controlName="formControlName"></ng-validation-messages>
 ```
 
 ### Local validator messages
@@ -131,8 +100,6 @@ You can specify parameters in the error messages using `{{parameterName}}`. Thes
 ### ValidationMessagesService
 
 ##### Methods:
-
-`setValidationMessages(config: ValidationMessagesConfig)`: Sets validation messages configuration
 
 `setTemplateMatcher(matcher: RegExp)`: Sets specifies which part of the message string will be replaced with default interpolated value (the default matcher is `/{{(.*)}}+/g`)
 

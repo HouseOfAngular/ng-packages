@@ -6,6 +6,7 @@ import {
   computed,
   DestroyRef,
   Host,
+  Inject,
   Injector,
   Input,
   OnInit,
@@ -32,6 +33,7 @@ import {
 } from '@angular/material/form-field';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { fromEvent, map } from 'rxjs';
+import { VALIDATION_MESSAGES_CONFIG } from '../../resources/providers/validation-messages-config.provider';
 
 @Component({
   selector: 'ng-validation-messages',
@@ -39,9 +41,17 @@ import { fromEvent, map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ValidationMessagesComponent implements OnInit, AfterContentInit {
-  @Input() errorsMessages: ValidationMessagesConfig = {};
+  @Input()
+  set errorsMessages(config: ValidationMessagesConfig) {
+    this._errorsMessages = this._errorsMessages
+      ? Object.assign(this._errorsMessages, config)
+      : config;
+  }
+
+  private _errorsMessages: ValidationMessagesConfig = {};
   @Input() control?: FormControl;
   @Input() controlName?: string;
+
   @Input()
   set multiple(multiple: boolean) {
     this._multiple.set(multiple);
@@ -58,14 +68,22 @@ export class ValidationMessagesComponent implements OnInit, AfterContentInit {
 
   private _controlSig!: Signal<undefined | FormControl>;
   private _multiple = signal(false);
+
   constructor(
+    @Optional()
+    @Inject(VALIDATION_MESSAGES_CONFIG)
+    errorMessagesDiConfig: ValidationMessagesConfig,
     @Host() @Optional() protected host: MatFormField,
     private _validationMessagesService: ValidationMessagesService,
     private _controlContainer: ControlContainer,
     private _destroyRef: DestroyRef,
     private _injector: Injector,
     private _cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    if (errorMessagesDiConfig) {
+      this.errorsMessages = errorMessagesDiConfig;
+    }
+  }
 
   get _serverErrors() {
     return this._validationMessagesService.serverErrors();
@@ -147,7 +165,7 @@ export class ValidationMessagesComponent implements OnInit, AfterContentInit {
           this._validationMessagesService.getValidatorErrorMessage(
             propertyName,
             value,
-            this.errorsMessages
+            this._errorsMessages
           );
         errorMessages.push(errorMessage);
       } else {

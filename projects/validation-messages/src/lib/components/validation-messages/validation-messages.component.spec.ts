@@ -4,7 +4,6 @@ import { MatFormField } from '@angular/material/form-field';
 import { createHostFactory } from '@ngneat/spectator/jest';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
-  ApiErrorMessage,
   ValidationMessagesConfig,
   ValidationMessagesService,
 } from 'validation-messages';

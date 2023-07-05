@@ -251,8 +251,6 @@ importers:
 
   projects/commit-lint: {}
 
-  projects/commit-lint-test: {}
-
   projects/linking-tool:
     dependencies:
       '@angular/common':

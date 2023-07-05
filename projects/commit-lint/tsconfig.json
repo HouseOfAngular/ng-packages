@@ -1,16 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "useDefineForClassFields": false,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "target": "es2017",
+    "rootDir": "src",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "declaration": true,
+    "inlineSourceMap": true,
+    "esModuleInterop": true,
+    "sourceMap": false,
+    "types": ["jest", "node"]
   },
   "files": [],
-  "include": [],
+  "include": ["src/**/*.ts"],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
   "references": [
     {
       "path": "./tsconfig.lib.json"
@@ -19,11 +24,5 @@
       "path": "./tsconfig.spec.json"
     }
   ],
-  "extends": "../../tsconfig.base.json",
-  "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  }
+  "extends": "../../tsconfig.base.json"
 }

@@ -2,28 +2,35 @@
   "name": "commit-lint",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "projects/commit-lint/src",
-  "prefix": "app",
   "tags": [],
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/angular:package",
-      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "project": "projects/commit-lint/ng-package.json"
-      },
-      "configurations": {
-        "production": {
-          "tsConfig": "projects/commit-lint/tsconfig.lib.prod.json"
-        },
-        "development": {
-          "tsConfig": "projects/commit-lint/tsconfig.lib.json"
-        }
-      },
-      "defaultConfiguration": "production"
+        "outputPath": "dist/projects/commit-lint",
+        "main": "projects/commit-lint/src/index.ts",
+        "tsConfig": "projects/commit-lint/tsconfig.json",
+        "assets": [
+          "projects/commit-lint/*.md",
+          "projects/commit-lint/houseofangular-commit-lint.json5"
+        ]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs projects-commit-lint {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["projects/commit-lint/**/*.ts"]
+      }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "projects/commit-lint/jest.config.ts",
@@ -34,16 +41,6 @@
           "ci": true,
           "codeCoverage": true
         }
-      }
-    },
-    "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "projects/commit-lint/**/*.ts",
-          "projects/commit-lint/**/*.html"
-        ]
       }
     }
   }

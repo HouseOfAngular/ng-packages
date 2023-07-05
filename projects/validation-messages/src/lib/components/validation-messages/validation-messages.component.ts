@@ -40,7 +40,7 @@ import { fromEvent, map } from 'rxjs';
 })
 export class ValidationMessagesComponent implements OnInit, AfterContentInit {
   @Input() errorsMessages: ValidationMessagesConfig = {};
-  @Input() control?: FormControl;
+  @Input() control?: AbstractControl;
   @Input() controlName?: string;
   @Input()
   set multiple(multiple: boolean) {
@@ -56,7 +56,7 @@ export class ValidationMessagesComponent implements OnInit, AfterContentInit {
     return [];
   });
 
-  private _controlSig!: Signal<undefined | FormControl>;
+  private _controlSig!: Signal<undefined | AbstractControl>;
   private _multiple = signal(false);
   constructor(
     @Host() @Optional() protected host: MatFormField,

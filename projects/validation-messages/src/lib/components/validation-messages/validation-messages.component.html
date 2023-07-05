@@ -1,4 +1,4 @@
-<ng-container *ngIf="shownErrors() && isControlDirtyOrTouched">
+<ng-container *ngIf="shownErrors()">
   <span *ngFor="let errorMessage of shownErrors()" data-test="validation-error"
     >{{ errorMessage }}<br />
   </span>

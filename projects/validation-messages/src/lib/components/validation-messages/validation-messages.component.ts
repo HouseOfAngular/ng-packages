@@ -58,7 +58,7 @@ export class ValidationMessagesComponent
     @Optional() @Host() protected host: MatFormField,
     private cd: ChangeDetectorRef,
     private validationMessagesService: ValidationMessagesService,
-    private controlContainer: ControlContainer
+    @Optional() private _controlContainer: ControlContainer
   ) {
     this.unsubscribeAndClearValueChanges =
       this.unsubscribeAndClearValueChanges.bind(this);

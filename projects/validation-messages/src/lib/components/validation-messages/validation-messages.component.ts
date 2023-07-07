@@ -61,7 +61,7 @@ export class ValidationMessagesComponent implements OnInit, AfterContentInit {
   constructor(
     @Host() @Optional() protected host: MatFormField,
     private _validationMessagesService: ValidationMessagesService,
-    private _controlContainer: ControlContainer,
+    @Optional() private _controlContainer: ControlContainer,
     private _destroyRef: DestroyRef,
     private _injector: Injector,
     private _cdr: ChangeDetectorRef

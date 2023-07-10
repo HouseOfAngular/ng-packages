@@ -1,17 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { FormGroupComponent } from '../../../../../projects/ng-forms/src/lib/ng-forms/form-group/form-group.directive';
-import { ControlComponent } from '../control/control.component';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import {
-  NullableFormControl,
-  NullableFormGroup,
-} from '../../../../../projects/ng-forms/src/lib/ng-forms/types';
-import {
-  AddressForm,
-  AddressFormComponent,
-} from './address-form/address-form.component';
+import {Component} from '@angular/core';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ControlComponent} from '../control/control.component';
+import {AddressForm, AddressFormComponent,} from './address-form/address-form.component';
+import {FormGroupComponent} from "@house-of-angular/ng-forms";
 
 export interface UserDetailsForm {
   name: string;
@@ -28,21 +19,4 @@ export interface UserDetailsForm {
 })
 export class UserFormComponent
   extends FormGroupComponent<UserDetailsForm>
-  implements OnInit
-{
-  userForm = this._fb.group<UserDetailsForm>({
-    name: [''],
-    address: this._fb.group({
-      city: [''],
-      street: [''],
-    }),
-  });
-
-  get nameControl(): NullableFormControl<string> {
-    return this.userForm.controls.name as NullableFormControl<string>;
-  }
-
-  get addressGroup(): NullableFormGroup<AddressForm> {
-    return this.userForm.controls.address as NullableFormGroup<AddressForm>;
-  }
-}
+{}

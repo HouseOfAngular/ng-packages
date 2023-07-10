@@ -1,49 +1,37 @@
-import { AfterViewInit, Directive, Input, OnInit, inject } from '@angular/core';
-import {
-  ControlContainer,
-  FormArray as NgFormArray,
-  FormGroup as NgFormGroup,
-} from '@angular/forms';
-import { ReplaySubject } from 'rxjs';
+import {AfterViewInit, Directive, inject, Input, OnInit} from '@angular/core';
+import { AbstractControl, ControlContainer, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import {ReplaySubject} from 'rxjs';
 
-import {
-  FormArray,
-  FormBuilder,
-  NullableFormControl,
-  NullableFormGroup,
-} from '../types';
-import { dynamicFormGroup } from '../utils/dynamic-form-group';
+import {dynamicFormGroup} from '../utils/dynamic-form-group';
 
 const OnInitSubject = Symbol('OnInitSubject');
 
 @Directive()
-export abstract class FormGroupComponent<T extends object = any>
+export abstract class FormGroupComponent<T extends {
+  [K in keyof T]: AbstractControl<any>;
+} = any>
   implements OnInit, AfterViewInit
 {
-  protected readonly _fb: FormBuilder;
-  protected readonly _parent?: ControlContainer;
+  protected readonly _fb = inject(FormBuilder);
+  protected readonly _parent =
+  inject(ControlContainer, {
+    optional: true,
+    skipSelf: true,
+    host: this._parentOnlyFromHost,
+  });
   protected get _parentOnlyFromHost() {
     return true;
   }
 
   private [OnInitSubject] = new ReplaySubject<true>(1);
 
-  // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('formGroup')
-  form!: NullableFormGroup<T>;
+  @Input()
+  formGroup!: FormGroup<T>;
 
   @Input()
   formGroupName?: string | number;
 
   constructor() {
-    this._fb = inject(FormBuilder);
-    this._parent =
-      inject(ControlContainer, {
-        optional: true,
-        skipSelf: true,
-        host: this._parentOnlyFromHost,
-      }) ?? undefined;
-
     this.onFormInit$.subscribe(() => this.initForm());
   }
 
@@ -64,53 +52,37 @@ export abstract class FormGroupComponent<T extends object = any>
     this[OnInitSubject].complete();
   }
 
-  getFormArray<K extends keyof T>(
-    prop: K
-  ): FormArray<T[K] extends any[] ? T[K][number] : never> {
-    return this.form.get(prop as string) as any;
-  }
-
-  getFormGroup<K extends keyof T>(
-    prop: K
-  ): NullableFormGroup<T[K] extends object ? T[K] : never> {
-    return this.form.get(prop as string) as any;
-  }
-
-  getFormControl<K extends keyof T>(prop: K): NullableFormControl<T[K]> {
-    return this.form.get(prop as string) as any;
-  }
-
   // -----------------------------------------------------------------------------------------------------
   // @ Private methods
   // -----------------------------------------------------------------------------------------------------
 
   private _initForm() {
-    if (this.form) return;
-    this.form = dynamicFormGroup(this.createForm()) as any;
+    if (this.formGroup) return;
+    this.formGroup = dynamicFormGroup(this.createForm());
 
     const parentForm = this._parent?.control;
 
     if (
-      parentForm instanceof NgFormArray &&
+      parentForm instanceof FormArray &&
       typeof this.formGroupName === 'number'
     ) {
       if (parentForm.controls[this.formGroupName]) {
-        this.form = parentForm.get([
+        this.formGroup = parentForm.get([
           this.formGroupName,
-        ]) as NullableFormGroup<T>;
+        ]) as FormGroup<T>;
       } else {
-        parentForm.insert(this.formGroupName, this.form);
+        parentForm.insert(this.formGroupName, this.formGroup);
       }
     } else if (
-      parentForm instanceof NgFormGroup &&
+      parentForm instanceof FormGroup &&
       typeof this.formGroupName === 'string' &&
       this.formGroupName
     ) {
       if (parentForm.contains(this.formGroupName)) {
-        this.form = parentForm.get(this.formGroupName) as NullableFormGroup<T>;
+        this.formGroup = parentForm.get(this.formGroupName) as FormGroup<T>;
       } else {
         const parentDisabled = parentForm.disabled;
-        parentForm.addControl(this.formGroupName, this.form);
+        parentForm.addControl(this.formGroupName, this.formGroup);
         if (parentDisabled) {
           parentForm.disable({ emitEvent: false });
         }

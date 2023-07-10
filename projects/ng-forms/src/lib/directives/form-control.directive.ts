@@ -6,36 +6,29 @@ import {
   ɵɵdirectiveInject as inject,
 } from '@angular/core';
 import {
-  ControlContainer,
-  FormArray as NgFormArray,
-  FormGroup as NgFormGroup,
+  ControlContainer, FormArray, FormBuilder, FormControl, FormGroup,
   FormsModule,
-  ReactiveFormsModule,
+  ReactiveFormsModule
 } from '@angular/forms';
-import { FormBuilder, FormControl, NullableFormControl } from '../types';
+
+
 
 @Directive({
   standalone: true,
   providers: [ReactiveFormsModule, FormsModule],
 })
-export abstract class FormControlComponent<T = any> implements OnInit {
-  protected readonly _fb: FormBuilder;
-  protected readonly _parent?: ControlContainer;
+export abstract class FormControlComponent<R> implements OnInit {
+  protected readonly _fb = inject(FormBuilder);
+  protected readonly _parent= inject(
+    ControlContainer,
+    InjectFlags.Host | InjectFlags.Optional | InjectFlags.SkipSelf
+  );
 
-  // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('formControl')
-  control!: NullableFormControl<T>;
+  @Input({required: true, transform: () => })
+  formControl!: FormControl<R>;
 
   @Input()
   formControlName?: string | number;
-
-  constructor() {
-    this._fb = inject(FormBuilder);
-    this._parent = inject(
-      ControlContainer,
-      InjectFlags.Host | InjectFlags.Optional | InjectFlags.SkipSelf
-    );
-  }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -50,23 +43,23 @@ export abstract class FormControlComponent<T = any> implements OnInit {
   // -----------------------------------------------------------------------------------------------------
 
   private _initForm() {
-    if (this.control) return;
+    if (this.formControl) return;
 
-    this.control = this.createForm();
+    this.formControl = this.createForm();
 
     const parentForm = this._parent?.control;
 
     if (
-      parentForm instanceof NgFormArray &&
+      parentForm instanceof FormArray &&
       typeof this.formControlName === 'number'
     ) {
       if (parentForm.controls[this.formControlName]) {
-        this.control = parentForm.get([this.formControlName]) as FormControl<T>;
+        this.formControl = parentForm.get([this.formControlName]) as FormControl<T>;
       } else {
-        parentForm.insert(this.formControlName, this.control);
+        parentForm.insert(this.formControlName, this.formControl);
       }
     } else if (
-      parentForm instanceof NgFormGroup &&
+      parentForm instanceof FormGroup &&
       typeof this.formControlName === 'string' &&
       this.formControlName
     ) {
@@ -76,14 +69,14 @@ export abstract class FormControlComponent<T = any> implements OnInit {
           this.formControlName
         )
       ) {
-        this.control = parentForm.get(this.formControlName) as FormControl<T>;
+        this.formControl = parentForm.get(this.formControlName) as FormControl<T>;
       } else {
-        parentForm.addControl(this.formControlName, this.control);
+        parentForm.addControl(this.formControlName, this.formControl);
       }
     }
   }
 
   protected createForm() {
-    return this._fb.control<T>(null);
+      return this._fb.control<T>(null);
   }
 }

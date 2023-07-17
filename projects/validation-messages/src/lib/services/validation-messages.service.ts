@@ -2,12 +2,15 @@ import { DestroyRef, Injectable, signal } from '@angular/core';
 import {
   ApiErrorMessages,
   Parser,
-  ValidationMessage,
   ValidationMessagesConfig,
+  ValidationMessagesEnhancedConfig,
 } from '../resources';
 import { KeyValue } from '@angular/common';
-import { getInterpolableParams, getPropByPath } from '../utils';
-import { mergeValidationMessagesConfigs } from '../utils/merge-validation-messages-configs.util';
+import {
+  getInterpolableParams,
+  getPropByPath,
+  mergeValidationMessagesConfigs,
+} from '../utils';
 import { distinctUntilChanged, Observable, isObservable } from 'rxjs';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -17,9 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class ValidationMessagesService {
   private parser!: Parser;
-  private validationMessagesFinalConfig: ValidationMessagesConfig<
-    ValidationMessage | any
-  > = {}; // types
+  private validationMessagesFinalConfig: ValidationMessagesEnhancedConfig = {};
   private templateMatcher = /{{(.*)}}+/g;
 
   _serverErrors = signal<ApiErrorMessages>(null);
@@ -27,9 +28,8 @@ export class ValidationMessagesService {
 
   constructor(private _destroyRef: DestroyRef) {}
 
-  serverErrorsValidator(apiErrors: ApiErrorMessages): ValidationErrors | null;
   serverErrorsValidator(
-    apiErrors: Observable<ApiErrorMessages>
+    apiErrors: ApiErrorMessages | Observable<ApiErrorMessages>
   ): ValidationErrors | null;
   serverErrorsValidator(
     apiErrors: Observable<ApiErrorMessages> | ApiErrorMessages
@@ -55,30 +55,39 @@ export class ValidationMessagesService {
 
   getValidatorErrorMessage(
     validatorName: string,
-    validatorValue: any = {},
-    localValidationMessagesConfig: ValidationMessagesConfig = {}
+    validatorValue: ValidationErrors[keyof ValidationErrors],
+    localValidationMessagesConfig: ValidationMessagesConfig
   ): string {
-    // types
     const validationMessages = mergeValidationMessagesConfigs(
       this.validationMessagesFinalConfig,
       localValidationMessagesConfig
-    ) as { [p: string]: any };
+    );
 
-    const validatorMessage = validationMessages[validatorName];
-    if (!validatorMessage) {
+    if (!validationMessages[validatorName]) {
       return this.validatorNotSpecified(validatorName);
     }
 
-    if (validatorName === 'pattern') {
-      const message = validatorMessage[validatorValue.requiredPattern];
+    if (
+      validatorName === 'pattern' &&
+      typeof validatorValue.requiredPattern === 'string'
+    ) {
+      const message =
+        validationMessages.pattern?.[validatorValue.requiredPattern] ||
+        validationMessages.pattern?.['default'];
       if (!message) {
         return this.validatorNotSpecified(validatorName);
       }
 
-      return this.interpolateMessageErrors(message.message, validatorValue);
+      return this.interpolateMessageError(message.message, validatorValue);
     }
 
-    const message = this.interpolateMessageErrors(
+    const validatorMessage = validationMessages[validatorName];
+
+    if (typeof validatorMessage === 'string') {
+      return validatorMessage;
+    }
+
+    const message = this.interpolateMessageError(
       validatorMessage.message,
       validatorValue
     );
@@ -138,7 +147,7 @@ export class ValidationMessagesService {
     }
   }
 
-  private interpolateMessageErrors(
+  private interpolateMessageError(
     message: string,
     validatorValue: KeyValue<string, any>
   ) {

@@ -1,17 +1,13 @@
 import {
-  ValidationMessage,
+  angularValidatorsWithValueMap,
   ValidationMessagesConfig,
-} from '../resources/interfaces';
-import { angularValidatorsWithValueMap } from '../resources/const';
+  ValidationMessagesEnhancedConfig,
+} from '../resources';
 
-const getValidatorValue = (key: string): string => {
-  return (angularValidatorsWithValueMap as any)[key] || key; // types
-};
-
-export const mergeValidationMessagesConfigs = (
-  config: ValidationMessagesConfig,
+export function mergeValidationMessagesConfigs(
+  config: ValidationMessagesEnhancedConfig,
   toBeMerged: ValidationMessagesConfig
-) => {
+): ValidationMessagesEnhancedConfig {
   config = { ...config };
   toBeMerged = { ...toBeMerged };
 
@@ -19,23 +15,34 @@ export const mergeValidationMessagesConfigs = (
     const value = toBeMerged[key];
 
     if (typeof value === 'string') {
-      config[key] = {
+      const validationObject = {
         message: value,
-        validatorValue: getValidatorValue(key),
+        validatorValue:
+          key in angularValidatorsWithValueMap
+            ? angularValidatorsWithValueMap[
+                key as keyof typeof angularValidatorsWithValueMap
+              ]
+            : key,
       };
-    } else {
-      const validator = value as ValidationMessage;
-
-      if (validator.pattern) {
-        config['pattern'] = {
-          ...(config['pattern'] as ValidationMessage),
-          [validator.pattern]: validator,
+      if (key === 'pattern') {
+        config.pattern = {
+          ...config.pattern,
+          default: validationObject,
         };
       } else {
-        config[key] = validator;
+        config[key] = validationObject;
+      }
+    } else {
+      if (value.pattern) {
+        config.pattern = {
+          ...config.pattern,
+          [value.pattern]: value,
+        };
+      } else {
+        config[key] = value;
       }
     }
   }
 
   return { ...config };
-};
+}

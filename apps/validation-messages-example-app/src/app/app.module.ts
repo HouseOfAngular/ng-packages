@@ -40,6 +40,7 @@ export class AppModule {
       message: 'Must contains only letters {{requiredPattern}}',
       pattern: '^[a-zA-Z]*$',
     },
+    pattern: 'Must follow the pattern',
   };
 
   constructor(private validationMessagesService: ValidationMessagesService) {

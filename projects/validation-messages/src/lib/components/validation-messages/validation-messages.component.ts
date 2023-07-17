@@ -215,7 +215,7 @@ export class ValidationMessagesComponent
       return;
     }
 
-    const control = this.controlContainer.control?.get(this.controlName);
+    const control = this._controlContainer?.control?.get(this.controlName);
 
     if (!(control instanceof FormControl)) {
       return;

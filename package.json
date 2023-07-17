@@ -51,6 +51,7 @@
     "@angular/material": "^15.2.0",
     "@commitlint/cli": "^17.5.1",
     "@commitlint/config-conventional": "^17.4.4",
+    "@ngneat/spectator": "^14.0.0",
     "@nrwl/angular": "15.9.2",
     "@nrwl/cypress": "15.9.2",
     "@nrwl/eslint-plugin-nx": "15.9.2",

@@ -18,11 +18,8 @@ import {
 } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import {
-  ApiErrorMessage,
-  ValidationMessagesConfig,
-} from '../../resources/interfaces';
-import { ValidationMessagesService } from '../../services/validation-messages.service';
+import { ApiErrorMessage, ValidationMessagesConfig } from '../../resources';
+import { ValidationMessagesService } from '../../services';
 import {
   MatFormField,
   MatFormFieldControl,
@@ -47,7 +44,7 @@ export class ValidationMessagesComponent
 
   @Input() errorsMessages: ValidationMessagesConfig = {};
   @Input() control!: AbstractControl;
-  @Input() controlName!: string;
+  @Input() controlName?: string;
 
   showServerErrors = false;
   parsedApiErrorMessages: string[] = [];
@@ -60,8 +57,6 @@ export class ValidationMessagesComponent
     private validationMessagesService: ValidationMessagesService,
     @Optional() private _controlContainer: ControlContainer
   ) {
-    this.unsubscribeAndClearValueChanges =
-      this.unsubscribeAndClearValueChanges.bind(this);
     this.materialErrorMatcher = validationMessagesService.materialErrorMatcher;
   }
 
@@ -215,7 +210,7 @@ export class ValidationMessagesComponent
       return;
     }
 
-    const control = this.controlContainer.control?.get(this.controlName);
+    const control = this._controlContainer?.control?.get(this.controlName);
 
     if (!(control instanceof FormControl)) {
       return;

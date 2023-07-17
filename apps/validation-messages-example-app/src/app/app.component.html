@@ -8,9 +8,10 @@
         <!-- global messages are extended/overridden by a local config -->
         <ng-validation-messages
           [errorsMessages]="{
-            emailDomain: 'Email domain error: \'{{parsedDomain}}\' is not a valid domain',
+            emailDomain:
+              'Email domain error: \'{{parsedDomain}}\' is not a valid domain',
             email: 'Invalid email (local config message)'
-            }"
+          }"
           [multiple]="multiple"
         ></ng-validation-messages>
       </mat-error>
@@ -43,7 +44,12 @@
     </mat-form-field>
   </div>
 
-  <button mat-raised-button color="primary" (click)="multiple = !multiple" class="form__button">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="multiple = !multiple"
+    class="form__button"
+  >
     Toggle multiple errors
   </button>
 

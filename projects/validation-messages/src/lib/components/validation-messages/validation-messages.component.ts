@@ -23,9 +23,8 @@ import {
 import {
   ApiErrorMessage,
   ApiErrorMessages,
-  ValidationMessagesConfig,
-} from '../../resources/interfaces';
-import { ValidationMessagesService } from '../../services/validation-messages.service';
+  ValidationMessagesConfig} from '../../resources';
+import { ValidationMessagesService } from '../../services';
 import {
   MatFormField,
   MatFormFieldControl,
@@ -182,7 +181,7 @@ export class ValidationMessagesComponent implements OnInit, AfterContentInit {
       return;
     }
 
-    const control = this._controlContainer.control?.get(this.controlName);
+    const control = this._controlContainer?.control?.get(this.controlName);
 
     if (!(control instanceof FormControl)) {
       return;

@@ -14,7 +14,8 @@
     "release:major": "standard-version --release-as=\"major\"",
     "release:minor": "standard-version --release-as=\"minor\"",
     "publish:latest": "ts-node ./build/publish-latest.ts",
-    "update:versions": "ts-node ./build/update-version-numbers.ts"
+    "generate-changelog": "changelog generate",
+    "update:versions": "ts-node ./build/update-version-numbers.ts && npm run generate-changelog"
   },
   "private": true,
   "dependencies": {
@@ -32,6 +33,7 @@
     "@commitlint/types": "^17.4.4",
     "chalk": "^4.1.2",
     "commander": "^10.0.1",
+    "generate-changelog": "^1.8.0",
     "glob": "^8.1.0",
     "json5": "^2.2.3",
     "lodash-decorators": "^6.0.1",

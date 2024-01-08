@@ -106,6 +106,7 @@ export function validateNxTags(
       break;
     }
     default: {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const exhaustCheck: never = linter;
     }
   }

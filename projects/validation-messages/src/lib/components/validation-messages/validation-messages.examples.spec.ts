@@ -19,7 +19,7 @@ const selectors = {
   requiredInput: '[data-cy="required-input"]',
   minMaxLengthInput: '[data-cy="min-max-length-input"]',
   emailInput: '[data-cy="email-input"]',
-  error: 'ng-validation-messages',
+  validationError: '[data-test="validation-error"]',
 };
 
 describe('ValidationMessagesExamples', () => {
@@ -143,7 +143,7 @@ describe('ValidationMessagesExamples', () => {
       spectator.blur(selectors.textInput);
 
       // assert
-      expect(selectors.error).not.toExist();
+      expect(selectors.validationError).not.toExist();
     });
 
     it('should display an error when anything other than letter is typed', () => {
@@ -155,7 +155,7 @@ describe('ValidationMessagesExamples', () => {
       spectator.blur(selectors.textInput);
 
       // assert
-      expect(selectors.error).toExist();
+      expect(selectors.validationError).toExist();
     });
 
     it('should display specific error for the letter pattern', () => {
@@ -167,7 +167,9 @@ describe('ValidationMessagesExamples', () => {
       spectator.blur(selectors.textInput);
 
       // assert
-      expect(selectors.error).toContainText('patternIssue ^[a-zA-Z]*$');
+      expect(selectors.validationError).toContainText(
+        'patternIssue ^[a-zA-Z]*$'
+      );
     });
 
     it('should display specific error for the capital letter pattern', () => {
@@ -179,7 +181,7 @@ describe('ValidationMessagesExamples', () => {
       spectator.blur(selectors.textInput);
 
       // assert
-      expect(selectors.error).toContainText(errorMessages.pattern);
+      expect(selectors.validationError).toContainText(errorMessages.pattern);
     });
   });
 
@@ -196,7 +198,7 @@ describe('ValidationMessagesExamples', () => {
       spectator.blur(selectors.emailInput);
 
       // assert
-      expect(selectors.error).not.toExist();
+      expect(selectors.validationError).not.toExist();
     });
 
     it('should display email error when something else is typed', () => {
@@ -208,7 +210,7 @@ describe('ValidationMessagesExamples', () => {
       spectator.blur(selectors.emailInput);
 
       // assert
-      expect(selectors.error).toContainText(errorMessages.email);
+      expect(selectors.validationError).toContainText(errorMessages.email);
     });
   });
 
@@ -222,7 +224,7 @@ describe('ValidationMessagesExamples', () => {
       spectator.blur(selectors.numberInput);
 
       // assert
-      expect(selectors.error).not.toExist();
+      expect(selectors.validationError).not.toExist();
     });
 
     it('should have min error when typed number is lower than min', () => {
@@ -235,7 +237,7 @@ describe('ValidationMessagesExamples', () => {
 
       // assert
       const service = spectator.inject(ValidationMessagesService);
-      expect(selectors.error).toContainText(
+      expect(selectors.validationError).toContainText(
         service['interpolateMessageError'](errorMessages.min, {
           key: 'value',
           value: 0,
@@ -253,7 +255,7 @@ describe('ValidationMessagesExamples', () => {
 
       // assert
       const service = spectator.inject(ValidationMessagesService);
-      expect(selectors.error).toContainText(
+      expect(selectors.validationError).toContainText(
         service['interpolateMessageError'](errorMessages.max, {
           key: 'value',
           value: 10,
@@ -272,7 +274,7 @@ describe('ValidationMessagesExamples', () => {
       spectator.blur(selectors.requiredInput);
 
       // assert
-      expect(selectors.error).not.toExist();
+      expect(selectors.validationError).not.toExist();
     });
 
     it('should have error when nothing is typed', () => {
@@ -284,7 +286,7 @@ describe('ValidationMessagesExamples', () => {
       spectator.blur(selectors.requiredInput);
 
       // assert
-      expect(selectors.error).toContainText(errorMessages.required);
+      expect(selectors.validationError).toContainText(errorMessages.required);
     });
   });
 
@@ -298,7 +300,7 @@ describe('ValidationMessagesExamples', () => {
       spectator.blur(selectors.minMaxLengthInput);
 
       // assert
-      expect(selectors.error).not.toExist();
+      expect(selectors.validationError).not.toExist();
     });
 
     it('should have minlength error when too short text is typed', () => {
@@ -311,7 +313,7 @@ describe('ValidationMessagesExamples', () => {
 
       // assert
       const service = spectator.inject(ValidationMessagesService);
-      expect(selectors.error).toContainText(
+      expect(selectors.validationError).toContainText(
         service['interpolateMessageError'](errorMessages.minlength, {
           key: 'value',
           value: 3,
@@ -329,7 +331,7 @@ describe('ValidationMessagesExamples', () => {
 
       // assert
       const service = spectator.inject(ValidationMessagesService);
-      expect(selectors.error).toContainText(
+      expect(selectors.validationError).toContainText(
         service['interpolateMessageError'](errorMessages.maxlength, {
           key: 'value',
           value: 5,
@@ -350,7 +352,7 @@ describe('ValidationMessagesExamples', () => {
       await dateHarness.blur();
 
       // assert
-      expect(selectors.error).not.toExist();
+      expect(selectors.validationError).not.toExist();
     });
 
     it('should have error when date in after the maxDate', async () => {
@@ -364,10 +366,12 @@ describe('ValidationMessagesExamples', () => {
       await dateHarness.blur();
 
       // assert
-      expect(selectors.error).toContainText('The date can not be later than');
+      expect(selectors.validationError).toContainText(
+        'The date can not be later than'
+      );
       /*  TODO: should allow to interpolate error message
       const service = spectator.inject(ValidationMessagesService);
-      expect(selectors.error).toContainText(
+      expect(selectors.validationError).toContainText(
         service['interpolateMessageError'](errorMessages.matDatepickerMax, {
           key: 'value',
           value: maxDate.toISOString(),
@@ -387,10 +391,12 @@ describe('ValidationMessagesExamples', () => {
       await dateHarness.blur();
 
       // assert
-      expect(selectors.error).toContainText('The date can not be earlier than');
+      expect(selectors.validationError).toContainText(
+        'The date can not be earlier than'
+      );
       /*  TODO: should allow to interpolate error message
       const service = spectator.inject(ValidationMessagesService);
-      expect(selectors.error).toContainText(
+      expect(selectors.validationError).toContainText(
         service['interpolateMessageError'](errorMessages.matDatepickerMax, {
           key: 'value',
           value: maxDate.toISOString(),

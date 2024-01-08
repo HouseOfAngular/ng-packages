@@ -226,7 +226,7 @@ importers:
         specifier: 17.2.8
         version: 17.2.8
       postcss:
-        specifier: ^8.4.33
+        specifier: ^8.4.5
         version: 8.4.33
       postcss-import:
         specifier: ~14.1.0

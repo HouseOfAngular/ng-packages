@@ -4,12 +4,11 @@ import { MatFormField } from '@angular/material/form-field';
 import { createHostFactory } from '@ngneat/spectator/jest';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
-  ApiErrorMessage,
+  ApiErrorMessages,
   ValidationMessagesConfig,
   ValidationMessagesService,
 } from 'validation-messages';
 import { selectors } from '../../resources/const/test-selectors';
-import { ApiErrorMessages } from '../../resources/interfaces';
 
 interface TestConfig {
   control?: FormControl;
@@ -48,9 +47,9 @@ describe('ValidationMessagesComponent', () => {
 
   const errorsMessages: ValidationMessagesConfig = {
     email: 'Invalid email',
-    required: 'Email is required',
+    required: 'Field is required',
     minlength: 'Min length is 5',
-    maxlength: 'Min length is 10',
+    maxlength: 'Max length is 10',
   };
 
   const customControl = new FormControl('', [

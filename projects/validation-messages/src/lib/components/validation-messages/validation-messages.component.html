@@ -1,4 +1,4 @@
-<ng-container *ngIf="shownErrors()">
+<ng-container *ngIf="shownErrors()?.length">
   <span *ngFor="let errorMessage of shownErrors()" data-test="validation-error"
     >{{ errorMessage }}<br />
   </span>

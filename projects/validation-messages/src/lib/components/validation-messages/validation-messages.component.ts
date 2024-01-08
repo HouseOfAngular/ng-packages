@@ -23,14 +23,15 @@ import {
 import {
   ApiErrorMessage,
   ApiErrorMessages,
-  ValidationMessagesConfig} from '../../resources';
+  ValidationMessagesConfig,
+} from '../../resources';
 import { ValidationMessagesService } from '../../services';
 import {
   MatFormField,
   MatFormFieldControl,
 } from '@angular/material/form-field';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { fromEvent, map } from 'rxjs';
+import { filter, fromEvent } from 'rxjs';
 
 @Component({
   selector: 'ng-validation-messages',
@@ -48,8 +49,8 @@ export class ValidationMessagesComponent implements OnInit, AfterContentInit {
 
   shownErrors = computed(() => {
     this._serverErrors;
-    const control = this._controlSig();
-    if (control && control.invalid) {
+    this._controlSig();
+    if (this.control?.invalid) {
       return this._defineErrorsToBeShown();
     }
     return [];
@@ -166,7 +167,7 @@ export class ValidationMessagesComponent implements OnInit, AfterContentInit {
     }
 
     const valueChanges$ = this.control.valueChanges.pipe(
-      map(() => this.control),
+      filter(() => !!this.control?.invalid),
       takeUntilDestroyed(this._destroyRef)
     );
 

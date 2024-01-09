@@ -1,6 +1,6 @@
 {
   "name": "@house-of-angular/commit-lint",
-  "version": "17.0.1",
+  "version": "17.0.2",
   "sideEffects": false,
   "description": "Package for handling validation of commits, nx tags, branch and code formatting",
   "author": {

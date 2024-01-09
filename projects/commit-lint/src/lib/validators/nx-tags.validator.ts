@@ -1,5 +1,7 @@
 import { Linter } from '../resources/enums/linter.enum';
 import { getConfig } from '../utils/get-config.util';
+import { readFileSync } from 'fs';
+import { glob } from 'glob';
 
 const tagsToIgnore = getConfig().nxTagsValidator.ignore;
 
@@ -22,11 +24,13 @@ function isReservedTag(tag: string): boolean {
   return tagsToIgnore.indexOf(tag) !== -1;
 }
 
-function parseNxJson(nxJson: any): string[] {
+function parseNxJson(): string[] {
   const declaredTags: string[] = [];
+  glob.sync('**/project.json', { ignore: '**/node_modules/**' }).map((file) => {
+    const content = readFileSync(file, 'utf-8');
+    const projectJson = JSON.parse(content);
 
-  Object.keys(nxJson.projects).forEach((key) => {
-    nxJson.projects[key].tags.forEach((tag: string) => {
+    projectJson.tags.forEach((tag: string) => {
       if (!isReservedTag(tag) && declaredTags.indexOf(tag) === -1) {
         declaredTags.push(tag);
       }
@@ -88,12 +92,8 @@ function extractTagsFromDepConstraints(constraints: any[]): string[] {
   return usedTags;
 }
 
-export function validateNxTags(
-  nxJson: any,
-  lintJson: any,
-  linter: Linter
-): void {
-  const declaredTags = parseNxJson(nxJson);
+export function validateNxTags(lintJson: any, linter: Linter): void {
+  const declaredTags = parseNxJson();
   let usedTags: string[] = [];
 
   switch (linter) {

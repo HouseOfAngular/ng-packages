@@ -56,8 +56,7 @@ export function validateNxTagsTask(options: ValidateNxTagsOptions) {
   );
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    validateNxTags(require(nx), linterConfig, linter);
+    validateNxTags(linterConfig, linter);
   } catch (e: any) {
     errorWithExit(e.message);
   }

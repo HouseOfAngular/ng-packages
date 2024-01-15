@@ -4,7 +4,7 @@ import {
   Parser,
   ValidationMessagesConfig,
   ValidationMessagesEnhancedConfig,
-} from '../resources';
+} from '../resources/index.js';
 import { KeyValue } from '@angular/common';
 import {
   getInterpolableParams,

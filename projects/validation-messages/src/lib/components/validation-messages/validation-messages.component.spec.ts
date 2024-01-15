@@ -1,5 +1,5 @@
 import { ControlContainer, FormControl, Validators } from '@angular/forms';
-import { ValidationMessagesComponent } from './validation-messages.component';
+import { ValidationMessagesComponent } from './validation-messages.component.js';
 import { MatFormField } from '@angular/material/form-field';
 import { createHostFactory } from '@ngneat/spectator/jest';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
@@ -8,7 +8,7 @@ import {
   ValidationMessagesConfig,
   ValidationMessagesService,
 } from 'validation-messages';
-import { selectors } from '../../resources/const/test-selectors';
+import { selectors } from '../../resources/const/test-selectors.js';
 
 interface TestConfig {
   control?: FormControl;

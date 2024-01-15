@@ -24,8 +24,8 @@ import {
   ApiErrorMessage,
   ApiErrorMessages,
   ValidationMessagesConfig,
-} from '../../resources';
-import { ValidationMessagesService } from '../../services';
+} from '../../resources/index.js';
+import { ValidationMessagesService } from '../../services/index.js';
 import {
   MatFormField,
   MatFormFieldControl,

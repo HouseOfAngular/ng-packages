@@ -2,7 +2,7 @@ import {
   angularValidatorsWithValueMap,
   ValidationMessagesConfig,
   ValidationMessagesEnhancedConfig,
-} from '../resources';
+} from '../resources/index.js';
 
 export function mergeValidationMessagesConfigs(
   config: ValidationMessagesEnhancedConfig,

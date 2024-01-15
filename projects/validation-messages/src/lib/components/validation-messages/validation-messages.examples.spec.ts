@@ -4,14 +4,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ValidationMessagesModule } from '../../validation-messages.module';
+import { ValidationMessagesModule } from '../../validation-messages.module.js';
 import { createHostFactory } from '@ngneat/spectator/jest';
 import { MatInputModule } from '@angular/material/input';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatDatepickerInputHarness } from '@angular/material/datepicker/testing';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { ValidationMessagesService } from '../../services/validation-messages.service';
+import { ValidationMessagesService } from '../../services/validation-messages.service.js';
 
 const selectors = {
   textInput: '[data-cy="text-input"]',

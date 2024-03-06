@@ -1,6 +1,6 @@
 {
   "name": "@house-of-angular/typed-urls",
-  "version": "17.0.3",
+  "version": "17.0.4",
   "peerDependencies": {
     "@angular/common": "^17.0.6",
     "@angular/core": "^17.0.6"

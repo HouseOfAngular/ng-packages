@@ -1,6 +1,6 @@
 {
   "name": "@house-of-angular/ng-packages",
-  "version": "17.0.3",
+  "version": "17.0.4",
   "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -106,6 +106,6 @@
   },
   "volta": {
     "pnpm": "8.6.0",
-    "node": "19.6.1"
+    "node": "20.11.0"
   }
 }

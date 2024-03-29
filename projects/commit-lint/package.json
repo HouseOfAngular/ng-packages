@@ -1,6 +1,6 @@
 {
   "name": "@house-of-angular/commit-lint",
-  "version": "17.0.4",
+  "version": "17.0.5",
   "peerDependencies": {
     "@angular/common": "^17.0.6",
     "@angular/core": "^17.0.6",

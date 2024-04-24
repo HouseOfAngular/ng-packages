@@ -1,6 +1,6 @@
 {
   "name": "@house-of-angular/ng-packages",
-  "version": "17.0.5",
+  "version": "17.0.6",
   "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -36,6 +36,7 @@
     "glob": "^8.1.0",
     "json5": "^2.2.3",
     "lodash-decorators": "^6.0.1",
+    "ora": "^8.0.1",
     "rxjs": "~7.8.0",
     "standard-version": "^9.5.0",
     "ts-morph": "^18.0.0",
@@ -100,11 +101,11 @@
     "typescript": "5.2.2"
   },
   "peerDependencies": {
-    "shelljs": "^0.8.5",
-    "prettier": "^2.6.2",
+    "@commitlint/lint": "^17.6.5",
     "git-describe": "^4.1.1",
-    "symlink-or-copy": "^1.3.1",
-    "@commitlint/lint": "^17.6.5"
+    "prettier": "^2.6.2",
+    "shelljs": "^0.8.5",
+    "symlink-or-copy": "^1.3.1"
   },
   "volta": {
     "pnpm": "8.6.0",

@@ -26,7 +26,7 @@ export function getConfig(): ConfigSchema {
     return config;
   }
 
-  config = getJSON5File('projects/commit-lint/houseofangular-commit-lint.json5');
+  config = getJSON5File('houseofangular-commit-lint.json5');
 
   // defaults
   config.change = {

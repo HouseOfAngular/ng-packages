@@ -12,8 +12,8 @@
     "baseUrl": "./",
     "paths": {
       "@house-of-angular/typed-urls": ["projects/typed-urls/src/index.ts"],
-      "linking-tool": ["projects/linking-tool/src/index.ts"],
       "commit-lint": ["projects/commit-lint/src/index.ts"],
+      "linking-tool": ["projects/linking-tool/src/index.ts"],
       "validation-messages": ["projects/validation-messages/src/index.ts"]
     }
   }
